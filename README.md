@@ -2,7 +2,8 @@
 
 Bảng so sánh trực quan về **pin và cấu hình của 67 robot humanoid** trên thị trường (16 quốc gia), phục vụ nghiên cứu thiết kế pin/BMS.
 
-Live: **https://obitvn.github.io/humanoid.github.io/**
+Live: **https://obitvn.github.io/humanoid.github.io/** (`index.html` — dashboard)
+Nguồn cập nhật dữ liệu: sửa `robots-data.js` → commit & push.
 
 ## Nội dung
 
