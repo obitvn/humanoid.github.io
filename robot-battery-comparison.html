@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>So Sánh Pin Robot Humanoid — Báo cáo thị trường</title>
+<meta name="author" content="Chu Tien Thinh">
+<meta name="description" content="Bảng so sánh trực quan cấu hình pin & thông số kỹ thuật các robot humanoid trên thị trường — phục vụ quyết định thiết kế pin/BMS.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Oswald:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   TOKENS — palette dark đã validate (dataviz reference, dark mode)
+   ============================================================ */
+:root{
+  --page:#0d0d0d;
+  --surface-1:#1a1a19;          /* chart & card surface */
+  --text-primary:#ffffff;
+  --text-secondary:#c3c2b7;
+  --text-muted:#898781;
+  --grid:#2c2c2a;
+  --baseline:#383835;
+  --border:rgba(255,255,255,.10);
+  /* categorical (dark steps, fixed order) */
+  --s1:#3987e5;  /* blue  */
+  --s2:#d95926;  /* orange */
+  --s3:#199e70;  /* aqua  */
+  --s4:#c98500;  /* yellow */
+  --s5:#d55181;  /* magenta */
+  --s6:#008300;  /* green */
+  --s7:#9085e9;  /* violet */
+  --s8:#e66767;  /* red */
+  /* sequential blue 100-700 (magnitude) */
+  --seq-100:#cde2fb; --seq-250:#86b6ef; --seq-400:#3987e5; --seq-550:#1c5cab; --seq-700:#0d366b;
+  --good:#0ca30c; --warn:#fab219; --serious:#ec835a; --critical:#d03b3b;
+  --accent:#3987e5;
+  --radius:10px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--page); color:var(--text-primary);
+  font-family:"Instrument Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  font-size:14px; line-height:1.5; padding-bottom:80px;
+}
+.wrap{max-width:1560px;margin:0 auto;padding:0 24px}
+h1,h2,h3{font-family:"Oswald","Instrument Sans",sans-serif;font-weight:500;letter-spacing:.02em}
+a{color:var(--s1);text-decoration:none}
+a:hover{text-decoration:underline}
+.muted{color:var(--text-muted)}
+.sec{color:var(--text-secondary)}
+.num{font-variant-numeric:tabular-nums}
+
+/* ============ HEADER ============ */
+header.page{
+  border-bottom:1px solid var(--border);
+  background:linear-gradient(180deg,#111113 0%,var(--page) 100%);
+  padding:34px 0 26px; margin-bottom:26px;
+}
+.brandrow{display:flex;align-items:center;gap:12px;margin-bottom:18px;flex-wrap:wrap}
+.badge{
+  font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+  color:#0b0b0b;background:var(--s1);padding:4px 10px;border-radius:999px;
+}
+.badge.ghost{background:transparent;color:var(--s1);border:1px solid var(--s1)}
+h1.title{font-size:34px;line-height:1.15;margin:6px 0 10px}
+.subtitle{color:var(--text-secondary);max-width:900px;font-size:15px}
+.updated{color:var(--text-muted);font-size:12.5px;margin-top:10px}
+
+/* ============ CONTROLS ============ */
+.controls{
+  display:flex;gap:10px;flex-wrap:wrap;align-items:center;
+  background:var(--surface-1);border:1px solid var(--border);border-radius:var(--radius);
+  padding:12px 14px;margin-bottom:22px;
+}
+.controls label{font-size:12px;color:var(--text-muted);display:flex;align-items:center;gap:6px}
+.controls input[type=search],.controls select{
+  background:#0d0d0d;border:1px solid var(--baseline);color:var(--text-primary);
+  border-radius:8px;padding:7px 10px;font:inherit;font-size:13px;min-width:150px;
+}
+.controls input[type=search]{min-width:240px}
+.controls input:focus,.controls select:focus{outline:2px solid var(--accent);outline-offset:1px}
+.seg{display:flex;border:1px solid var(--baseline);border-radius:8px;overflow:hidden}
+.seg button{
+  background:transparent;color:var(--text-secondary);border:0;padding:7px 14px;
+  font:inherit;font-size:13px;cursor:pointer;
+}
+.seg button+button{border-left:1px solid var(--baseline)}
+.seg button.on{background:var(--accent);color:#0b0b0b;font-weight:600}
+.btn{
+  background:transparent;border:1px solid var(--baseline);color:var(--text-secondary);
+  border-radius:8px;padding:7px 14px;font:inherit;font-size:13px;cursor:pointer;
+}
+.btn:hover{border-color:var(--accent);color:var(--text-primary)}
+.spacer{flex:1}
+#countLabel{font-size:12.5px;color:var(--text-muted)}
+
+/* ============ STAT TILES ============ */
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:26px}
+.tile{background:var(--surface-1);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px}
+.tile .lbl{font-size:12.5px;color:var(--text-secondary)}
+.tile .val{font-size:30px;font-weight:600;margin-top:4px}
+.tile .sub{font-size:12px;color:var(--text-muted);margin-top:2px}
+
+/* ============ SECTION HEADS ============ */
+.sechead{display:flex;align-items:baseline;gap:12px;margin:30px 0 14px}
+.sechead h2{font-size:21px}
+.sechead .hint{font-size:12.5px;color:var(--text-muted)}
+
+/* ============ CHARTS ============ */
+.charts{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:1000px){.charts{grid-template-columns:1fr}}
+.chart-card{background:var(--surface-1);border:1px solid var(--border);border-radius:var(--radius);padding:18px 18px 14px}
+.chart-card h3{font-family:"Instrument Sans",sans-serif;font-size:14px;font-weight:600;letter-spacing:0}
+.chart-card .ch-sub{font-size:12px;color:var(--text-muted);margin:2px 0 14px}
+.chart{position:relative}
+/* horizontal bars */
+.hbar-row{display:grid;grid-template-columns:150px 1fr 64px;align-items:center;gap:8px;margin:5px 0}
+.hbar-name{font-size:12px;color:var(--text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:right}
+.hbar-track{position:relative;height:14px;background:transparent}
+.hbar-fill{position:absolute;left:0;top:0;bottom:0;border-radius:0 4px 4px 0;background:var(--s1);min-width:2px}
+.hbar-val{font-size:12px;color:var(--text-secondary);font-variant-numeric:tabular-nums}
+/* legend */
+.legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:12px}
+.legend .li{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-secondary)}
+.legend .sw{width:10px;height:10px;border-radius:3px;display:inline-block}
+/* scatter */
+.svg-tip{position:fixed;pointer-events:none;background:#0b0b0b;border:1px solid var(--baseline);
+  border-radius:8px;padding:8px 10px;font-size:12px;color:var(--text-primary);z-index:50;display:none;max-width:260px;box-shadow:0 6px 24px rgba(0,0,0,.5)}
+.svg-tip b{display:block;margin-bottom:2px}
+.axis-tick{font-size:10.5px;fill:var(--text-muted)}
+.gridline{stroke:var(--grid);stroke-width:1}
+
+/* ============ HOT-SWAP SECTION ============ */
+.hs-head{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:2px 0 12px}
+.hs-chip{display:inline-flex;align-items:center;gap:7px;font-size:12px;color:var(--text-secondary);background:var(--surface-1);border:1px solid var(--border);border-radius:999px;padding:4px 12px}
+.hs-chip .dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+.hs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:12px;margin-bottom:6px}
+.hs-card{background:var(--surface-1);border:1px solid var(--border);border-radius:var(--radius);padding:14px;display:flex;gap:12px;align-items:flex-start}
+.hs-card .thumb{width:125px;height:125px;flex:none}
+.hs-card .body{min-width:0;flex:1}
+.hs-card .nm{font-weight:600;font-size:13.5px;line-height:1.25}
+.hs-card .mf{font-size:11.5px;color:var(--text-muted)}
+.mech{display:inline-block;font-size:11px;font-weight:600;border-radius:6px;padding:2px 8px;margin:5px 0 4px;color:#0b0b0b}
+.hs-card .pack{font-size:12px;color:var(--text-secondary);font-variant-numeric:tabular-nums}
+.hs-card .note{font-size:11.5px;color:var(--text-muted);margin-top:3px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+
+/* ============ HORIZONTAL NAV (cuộn ngang bảng) ============ */
+/* thanh ray đồng bộ nằm TRÊN đầu bảng — không phải kéo xuống cuối */
+.railwrap{overflow-x:auto;overflow-y:hidden;height:12px;border-radius:6px;background:#141415;border:1px solid var(--grid);margin-bottom:8px;scrollbar-width:thin}
+.railwrap::-webkit-scrollbar{height:12px}
+.railwrap .railspacer{height:1px}
+/* nút ◀ ▶ nổi cố định góc phải màn hình, chỉ hiện khi bảng đang thấy & còn cuộn */
+.hnav{position:fixed;right:18px;bottom:96px;display:flex;flex-direction:column;gap:8px;z-index:40}
+.hnav button{width:42px;height:42px;border-radius:50%;border:1px solid var(--baseline);background:rgba(20,20,21,.94);color:var(--text-primary);font-size:15px;cursor:pointer;box-shadow:0 4px 18px rgba(0,0,0,.5)}
+.hnav button:hover{border-color:var(--accent);color:var(--accent)}
+
+/* ============ TABLE ============ */
+/* chỉ cuộn NGANG (không cuộn dọc — bảng trải theo trang) */
+.tablewrap{border:1px solid var(--border);border-radius:var(--radius);background:var(--surface-1);overflow-x:auto}
+table.cmp{border-collapse:separate;border-spacing:0;width:max-content;min-width:100%;font-size:12.5px;table-layout:auto}
+table.cmp th,table.cmp td{padding:8px 12px;border-bottom:1px solid var(--grid);border-right:1px solid var(--grid);vertical-align:top;white-space:nowrap;line-height:1.45}
+/* cột chữ dài: xuống dòng theo TỪ trong khung max-width — không vỡ từng ký tự */
+table.cmp td.wrap,table.cmp th.wrap{white-space:normal;word-break:normal;overflow-wrap:break-word;max-width:250px;min-width:150px}
+table.cmp td.wide,table.cmp th.wide{max-width:360px;min-width:200px}
+table.cmp thead th{
+  position:sticky;top:0;z-index:5;background:#141415;font-weight:600;font-size:12px;
+  color:var(--text-secondary);text-align:left;cursor:pointer;user-select:none;border-bottom:1px solid var(--baseline);
+}
+/* hàng nhóm (PIN/ROBOT) cao cố định 24px; hàng tên cột dính ngay DƯỚI hàng nhóm — không chồng nhau */
+table.cmp thead tr:first-child th{height:24px;padding:3px 10px}
+table.cmp thead tr:nth-child(2) th{top:24px}
+table.cmp thead th.group{background:#0f0f10;color:var(--s1);font-size:11px;letter-spacing:.12em;text-transform:uppercase;cursor:default;text-align:center}
+table.cmp thead th:hover{color:var(--text-primary)}
+table.cmp thead th .arr{font-size:9px;opacity:.8;margin-left:6px}
+table.cmp tbody tr:hover td{background:rgba(57,135,229,.06)}
+/* identity column — hẹp (đã thu 30%), dính trái khi cuộn ngang */
+table.cmp td.idcell{min-width:126px;max-width:152px;position:sticky;left:0;background:var(--surface-1);z-index:4}
+table.cmp thead th.idcell{position:sticky;left:0;top:0;background:#141415;z-index:7}
+table.cmp tbody tr:hover td.idcell{background:#1f1f20}
+table.cmp .thumb{width:82px;height:82px}
+table.cmp .rname{font-size:12px}
+.thumb{width:44px;height:44px;border-radius:8px;object-fit:cover;background:#0d0d0d;border:1px solid var(--baseline);flex:none}
+.thumb.ph{display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:9px;text-align:center}
+.rname{font-weight:600;line-height:1.25}
+.rname .mfr{display:block;font-weight:400;font-size:11px;color:var(--text-muted)}
+td.bat{background:rgba(57,135,229,.05)}
+td .na{color:var(--text-muted);opacity:.55}
+td .flag{display:inline-block;background:#232324;border:1px solid var(--baseline);color:var(--text-secondary);border-radius:6px;padding:1px 7px;font-size:11.5px;margin:1px 2px 1px 0}
+td .flag.hot{color:var(--good);border-color:rgba(12,163,12,.45)}
+.src-link{font-size:11px;color:var(--text-muted)}
+/* expanded row detail */
+tr.detail td{background:#101012;white-space:normal}
+.detail-box{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;padding:6px 4px}
+.detail-box .kv .k{font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.08em}
+.detail-box .kv .v{font-size:13px;color:var(--text-primary);margin-top:2px;overflow-wrap:anywhere}
+.detail-desc{grid-column:1/-1;color:var(--text-secondary);font-size:13px;overflow-wrap:anywhere}
+tr.detail td{max-width:1100px}
+
+/* footer */
+footer{margin-top:44px;border-top:1px solid var(--border);padding-top:18px;color:var(--text-muted);font-size:12.5px;line-height:1.7}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+
+<header class="page">
+  <div class="wrap">
+    <div class="brandrow">
+      <span class="badge">Chu Tien Thinh</span>
+      <span class="badge ghost">Market Survey</span>
+      <span class="muted" style="font-size:12.5px">Nguồn: humanoid.guide · humanoid-robots.io · web nhà sản xuất</span>
+    </div>
+    <h1 class="title">So sánh Pin &amp; Cấu hình Robot Humanoid</h1>
+    <p class="subtitle">Báo cáo thống kê trực quan về loại pin, dung lượng, điện áp, dòng xả và thông số kỹ thuật của các robot humanoid trên thị trường — tài liệu tham khảo cho nghiên cứu và thiết kế pin/BMS robot humanoid. Tác giả: <b>Chu Tien Thinh</b>.</p>
+    <div class="updated" id="updatedLabel"></div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- CONTROLS -->
+  <div class="controls">
+    <input type="search" id="q" placeholder="Tìm robot, nhà sản xuất, loại pin…">
+    <label>Quốc gia <select id="fCountry"><option value="">Tất cả</option></select></label>
+    <label>Loại pin <select id="fChem"><option value="">Tất cả</option></select></label>
+    <label>Hot-swap <select id="fSwap">
+      <option value="">Tất cả</option><option value="yes">Có</option><option value="no">Không</option>
+    </select></label>
+    <div class="spacer"></div>
+    <span id="countLabel"></span>
+    <button class="btn" id="csvBtn">Xuất CSV</button>
+  </div>
+
+  <!-- STAT TILES -->
+  <div class="tiles" id="tiles"></div>
+
+  <!-- CHARTS -->
+  <div class="sechead"><h2>Phân tích pin</h2><span class="hint">di chuột lên cột để xem chi tiết</span></div>
+  <div class="charts">
+    <div class="chart-card"><h3>Dung lượng pin (Wh)</h3><div class="ch-sub">Năng lượng tổng của pack — robot xếp theo dung lượng</div><div class="chart" id="chCap"></div></div>
+    <div class="chart-card"><h3>Thời gian hoạt động / lần sạc (h)</h3><div class="ch-sub">Runtime per charge theo công bố của NSX</div><div class="chart" id="chRun"></div></div>
+    <div class="chart-card"><h3>Dung lượng pin vs khối lượng robot</h3><div class="ch-sub">Mỗi điểm là 1 robot — màu theo loại pin</div><div class="chart" id="chScatter"><svg id="scatterSvg" width="100%" height="340" role="img" aria-label="Scatter chart"></svg></div><div class="legend" id="scatterLegend"></div></div>
+    <div class="chart-card"><h3>Phân bố điện áp pack (V)</h3><div class="ch-sub">Số robot theo dải điện áp danh định</div><div class="chart" id="chVolt"></div></div>
+  </div>
+
+  <!-- HOT-SWAP SECTION -->
+  <div class="sechead"><h2>Chế độ thay pin (Hot-swap)</h2><span class="hint" id="hsCount"></span></div>
+  <div class="hs-head" id="hsChips"></div>
+  <div class="hs-grid" id="hsGrid"></div>
+
+  <!-- TABLE -->
+  <div class="sechead"><h2>Bảng so sánh chi tiết</h2><span class="hint">cuộn ngang bằng ray phía trên / nút ◀▶ / Shift+cuộn chuột (cột Robot dính trái) · click tiêu đề cột để sắp xếp · click hàng để xem chi tiết &amp; nguồn</span></div>
+  <div class="railwrap" id="railWrap"><div class="railspacer" id="railSpacer"></div></div>
+  <div class="tablewrap">
+    <table class="cmp" id="cmpTable">
+      <thead id="cmpHead"></thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+
+  <footer>
+    <b style="color:var(--text-secondary)">Cách cập nhật dữ liệu:</b> mọi dữ liệu nằm trong mảng <code>ROBOTS</code> ở file <code>robots-data.js</code> (cùng thư mục).
+    Thêm/sửa robot bằng cách thêm 1 object theo mẫu có sẵn trong file đó, rồi tải lại trang — bảng, biểu đồ và số liệu thống kê tự cập nhật.<br>
+    Dữ liệu thu thập từ <a href="https://humanoid.guide/humanoid-robots-database/" target="_blank" rel="noopener">humanoid.guide</a>,
+    <a href="https://www.humanoid-robots.io/robots" target="_blank" rel="noopener">humanoid-robots.io</a> và các trang thông số chính hãng.
+    Giá trị thiếu được đánh dấu N/A. Số liệu chỉ mang tính tham khảo thiết kế — hãy đối chiếu datasheet chính thức trước khi quyết định kỹ thuật.
+  </footer>
+</div>
+
+<div class="svg-tip" id="tip"></div>
+<div class="hnav hidden" id="hnav">
+  <button id="hnavL" title="Cuộn trái">◀</button>
+  <button id="hnavR" title="Cuộn phải">▶</button>
+</div>
+
+<script src="./robots-data.js"></script>
+<script>
+/* ============================================================
+   RENDER ENGINE
+   ============================================================ */
+const $=s=>document.querySelector(s);
+const NA='<span class="na">N/A</span>';
+const fmt=(v,d=0)=>v==null?NA:(+v).toLocaleString('vi-VN',{maximumFractionDigits:d,minimumFractionDigits:0});
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const nz=v=>v!==null&&v!==undefined&&v!==''&&!isNaN(v);
+
+let SORT={key:'capacity_wh',dir:-1};
+let expanded=new Set();
+
+/* chemistry normalization → bucket for scatter color */
+function chemBucket(b){
+  const t=(b.type||'').toLowerCase();
+  if(t.includes('lifepo')||t.includes('phosphate'))return 'LiFePO4';
+  if(t.includes('semi')||t.includes('solid'))return 'Semi-solid';
+  if(t.includes('li-ion')||t.includes('li ion')||t.includes('lion')||t.includes('lithium')||t.includes('21700')||t.includes('18650')||t.includes('pouch')||t.includes('polymer'))return 'Li-ion';
+  return 'Khác';
+}
+const CHEM_COLOR={'Li-ion':'var(--s1)','LiFePO4':'var(--s2)','Semi-solid':'var(--s3)','Khác':'var(--s5)'};
+
+/* -------- derived: capacity_wh fallback from mAh*v -------- */
+function capWh(r){
+  if(nz(r.battery?.capacity_wh))return +r.battery.capacity_wh;
+  const c=r.battery?.capacity||'';
+  /* không bóc số từ câu văn "chưa công bố / ước lượng…" */
+  if(/never|estimate|undisclosed|not officially|chưa công bố|ước lượng/i.test(c))return null;
+  const m=c.match(/([\d.]+)\s*k?mah/i);
+  if(m&&nz(r.battery?.voltage_v)){
+    let mah=+m[1]; if(/k ?mah/i.test(c))mah*=1000;
+    return +(mah*+r.battery.voltage_v/1e3).toFixed(1); // mAh × V = mWh → Wh
+  }
+  const w=c.match(/([\d.]+)\s*k?wh/i);
+  if(w){let wh=+w[1]; if(/kwh/i.test(c))wh*=1000; return wh;}
+  return null;
+}
+/* Ah = Wh / V (ưu tiên số công bố Ah nếu có) */
+function capAh(r){
+  const c=r.battery?.capacity||'';
+  const m=c.match(/([\d,\.]+)\s*k?mah/i);
+  if(m){let mah=+m[1].replace(/,/g,''); if(/k ?mah/i.test(c))mah*=1000; return +(mah/1000).toFixed(1);}
+  const a=c.match(/([\d.]+)\s*ah\b/i);
+  if(a)return +a[1];
+  const wh=capWh(r),v=r.battery?.voltage_v;
+  if(nz(wh)&&nz(v))return +(wh/+v).toFixed(1);
+  return null;
+}
+/* phân loại cơ chế hot-swap từ mô tả pin */
+function swapType(b){
+  const t=((b.form_factor||'')+' '+(b.special||'')+' '+(b.config||'')).toLowerCase();
+  if(/(self|autonom|its own|robot exchanges|swaps its own)/.test(t))return{k:'self',label:'Robot tự đổi pin',color:'var(--good)'};
+  if(/(dual|two pack|2 pack|double|2 identical|main \+ aux|dual-battery)/.test(t))return{k:'dual',label:'Dual-pack · đổi không gián đoạn',color:'var(--s3)'};
+  if(/slide/.test(t))return{k:'slide',label:'Slide-rail · rút kéo nhanh',color:'var(--s7)'};
+  return{k:'quick',label:'Quick-release · tháo lắp nhanh',color:'var(--s1)'};
+}
+
+/* -------- filters -------- */
+function currentRows(){
+  const q=$('#q').value.trim().toLowerCase();
+  const fc=$('#fCountry').value, ch=$('#fChem').value, sw=$('#fSwap').value;
+  return ROBOTS.filter(r=>{
+    if(fc&&r.country!==fc)return false;
+    if(ch&&chemBucket(r.battery)!==ch)return false;
+    if(sw==='yes'&&!r.battery?.hot_swap)return false;
+    if(sw==='no'&&r.battery?.hot_swap)return false;
+    if(q){
+      const hay=[r.name,r.manufacturer,r.country,r.battery?.type,r.battery?.special,chemBucket(r.battery),(r.usecases||[]).join(' '),(r.features||[]).join(' ')].join(' ').toLowerCase();
+      if(!hay.includes(q))return false;
+    }
+    return true;
+  });
+}
+
+/* -------- tiles -------- */
+function renderTiles(rows){
+  const whs=rows.map(capWh).filter(nz);
+  const runs=rows.map(r=>r.runtime_h).filter(nz);
+  const vols=rows.map(r=>r.battery?.voltage_v).filter(nz);
+  const packs=rows.map(r=>r.battery?.pack_weight_kg).filter(nz);
+  const swap=rows.filter(r=>r.battery?.hot_swap).length;
+  const med=a=>{if(!a.length)return NA;const s=[...a].sort((x,y)=>x-y);return s[Math.floor(s.length/2)]};
+  const whMed=med(whs);
+  const ahs=rows.map(capAh).filter(nz);const ahMed=med(ahs);
+  const den=rows.filter(r=>nz(capWh(r))&&nz(r.battery?.pack_weight_kg));
+  const denVal=den.length?(den.reduce((a,r)=>a+capWh(r)/r.battery.pack_weight_kg,0)/den.length):null;
+  const tiles=[
+    {l:'Số robot',v:rows.length,s:'sau khi lọc'},
+    {l:'Dung lượng pin trung vị',v:nz(whMed)?Math.round(whMed)+' Wh':NA,s:(nz(ahMed)?'≈ '+ahMed+' Ah · ':'')+whs.length+' robot có dữ liệu'},
+    {l:'Điện áp pack trung vị',v:nz(med(vols))?med(vols)+' V':NA,s:vols.length+' robot có dữ liệu'},
+    {l:'Runtime trung vị',v:nz(med(runs))?med(runs)+' h':NA,s:runs.length+' robot có dữ liệu'},
+    {l:'Khối lượng pack trung vị',v:nz(med(packs))?med(packs)+' kg':NA,s:packs.length+' robot có dữ liệu'},
+    {l:'Pin tháo-lắp nóng (hot-swap)',v:swap+'/'+rows.length,s:nz(denVal)?' mật độ năng lượng TB ≈ '+Math.round(denVal)+' Wh/kg':''},
+  ];
+  $('#tiles').innerHTML=tiles.map(t=>`<div class="tile"><div class="lbl">${t.l}</div><div class="val">${t.v}</div><div class="sub">${t.s}</div></div>`).join('');
+}
+
+/* -------- hbar chart -------- */
+function hbar(el,rows,valFn,unit,color='var(--s1)',tipFn){
+  const data=rows.map(r=>({r,v:valFn(r)})).filter(d=>nz(d.v)).sort((a,b)=>b.v-a.v).slice(0,30);
+  if(!data.length){el.innerHTML='<div class="muted" style="padding:20px 0">Không đủ dữ liệu</div>';return}
+  const max=Math.max(...data.map(d=>d.v));
+  el.innerHTML=data.map((d,i)=>`
+    <div class="hbar-row" data-i="${i}">
+      <div class="hbar-name" title="${esc(d.r.name)}">${esc(d.r.name)}</div>
+      <div class="hbar-track"><div class="hbar-fill" style="width:${Math.max(1,d.v/max*100)}%;${i%2?'opacity:.82':''}"></div></div>
+      <div class="hbar-val">${(+d.v).toLocaleString('vi-VN',{maximumFractionDigits:1})} ${unit}</div>
+    </div>`).join('');
+  if(tipFn)el.querySelectorAll('.hbar-row').forEach(row=>{
+    const d=data[+row.dataset.i];
+    row.addEventListener('mousemove',e=>showTip(e,tipFn(d)));
+    row.addEventListener('mouseleave',hideTip);
+  });
+}
+
+/* -------- scatter -------- */
+function scatter(rows){
+  const svg=$('#scatterSvg');const legend=$('#scatterLegend');
+  const data=rows.map(r=>({r,x:r.weight_kg,y:capWh(r)})).filter(d=>nz(d.x)&&nz(d.y));
+  if(data.length<2){svg.innerHTML='';legend.innerHTML='<span class="muted">Không đủ dữ liệu</span>';return}
+  const W=svg.clientWidth||600,H=340,P={l:56,r:18,t:14,b:40};
+  const xs=data.map(d=>d.x),ys=data.map(d=>d.y);
+  const xmax=Math.max(...xs)*1.08,ymax=Math.max(...ys)*1.05;
+  const X=v=>P.l+(v/xmax)*(W-P.l-P.r), Y=v=>H-P.b-(v/ymax)*(H-P.t-P.b);
+  let g='';
+  for(let i=0;i<=4;i++){
+    const yv=ymax*i/4, xv=xmax*i/4, y=Y(yv), x=X(xv);
+    g+=`<line class="gridline" x1="${P.l}" y1="${y}" x2="${W-P.r}" y2="${y}"/>`;
+    g+=`<text class="axis-tick" x="${P.l-8}" y="${y+3}" text-anchor="end">${Math.round(yv)}</text>`;
+    g+=`<text class="axis-tick" x="${x}" y="${H-P.b+16}" text-anchor="middle">${Math.round(xv)}</text>`;
+  }
+  g+=`<line x1="${P.l}" y1="${H-P.b}" x2="${W-P.r}" y2="${H-P.b}" stroke="var(--baseline)" stroke-width="1"/>`;
+  g+=`<text class="axis-tick" x="${(P.l+W-P.r)/2}" y="${H-6}" text-anchor="middle" fill="var(--text-secondary)" font-size="11">Khối lượng robot (kg)</text>`;
+  g+=`<text class="axis-tick" x="14" y="${(P.t+H-P.b)/2}" text-anchor="middle" fill="var(--text-secondary)" font-size="11" transform="rotate(-90 14 ${(P.t+H-P.b)/2})">Dung lượng pin (Wh)</text>`;
+  for(const d of data){
+    g+=`<circle class="pt" data-n="${esc(d.r.name)}" cx="${X(d.x)}" cy="${Y(d.y)}" r="5.5"
+        fill="${CHEM_COLOR[chemBucket(d.r.battery)]}" stroke="var(--surface-1)" stroke-width="2" style="cursor:pointer"/>`;
+  }
+  svg.innerHTML=g;
+  svg.querySelectorAll('.pt').forEach(p=>{
+    const d=data.find(q=>q.r.name===p.dataset.n);
+    p.addEventListener('mousemove',e=>showTip(e,`<b>${esc(d.r.name)}</b>${esc(d.r.manufacturer)}<br>${Math.round(d.y)} Wh${nz(capAh(d.r))?' · '+capAh(d.r)+' Ah':''} · ${d.x} kg · ${chemBucket(d.r.battery)}${nz(d.r.battery?.voltage_v)?' · '+d.r.battery.voltage_v+' V':''}`));
+    p.addEventListener('mouseleave',hideTip);
+  });
+  legend.innerHTML=Object.keys(CHEM_COLOR).map(k=>`<span class="li"><span class="sw" style="background:${CHEM_COLOR[k]}"></span>${k}</span>`).join('');
+}
+
+/* -------- voltage buckets -------- */
+function voltChart(rows){
+  const B=[[0,30,'&lt;30 V (dải 6–7S)'],[30,45,'30–45 V (8–10S)'],[45,55,'45–55 V (11–13S)'],[55,65,'55–65 V (14–15S)'],[65,999,'&gt;65 V (16S+)']];
+  const counts=B.map(([a,b])=>rows.filter(r=>nz(r.battery?.voltage_v)&&r.battery.voltage_v>=a&&r.battery.voltage_v<b).length);
+  const max=Math.max(...counts,1);
+  $('#chVolt').innerHTML=B.map((b,i)=>`
+    <div class="hbar-row" style="grid-template-columns:170px 1fr 34px">
+      <div class="hbar-name">${b[2]}</div>
+      <div class="hbar-track"><div class="hbar-fill" style="width:${counts[i]/max*100}%;background:var(--s1);opacity:${1-i*.13}"></div></div>
+      <div class="hbar-val">${counts[i]}</div>
+    </div>`).join('');
+}
+
+/* -------- tooltips -------- */
+function showTip(e,html){const t=$('#tip');t.innerHTML=html;t.style.display='block';moveTip(e)}
+function moveTip(e){const t=$('#tip');const x=Math.min(e.clientX+14,innerWidth-t.offsetWidth-8),y=Math.min(e.clientY+14,innerHeight-t.offsetHeight-8);t.style.left=x+'px';t.style.top=y+'px'}
+function hideTip(){$('#tip').style.display='none'}
+
+/* -------- table -------- */
+const COLS=[
+  {g:'pin',k:'capacity_wh',t:'Dung lượng (Wh)',get:r=>capWh(r)!=null?fmt(capWh(r),1):NA,cls:'bat num',sort:r=>capWh(r)??-1},
+  {g:'pin',k:'capacity_ah',t:'Dung lượng (Ah)',get:r=>nz(capAh(r))?capAh(r):NA,cls:'bat num',sort:r=>capAh(r)??-1},
+  {g:'pin',k:'battery.capacity',t:'Công bố',get:r=>r.battery?.capacity?esc(r.battery.capacity):NA,cls:'bat wrap'},
+  {g:'pin',k:'battery.voltage_v',t:'V (pin)',get:r=>nz(r.battery?.voltage_v)?r.battery.voltage_v:NA,cls:'bat num',sort:r=>r.battery?.voltage_v??-1},
+  {g:'pin',k:'battery.type',t:'Loại pin',get:r=>r.battery?.type?esc(r.battery.type):NA,cls:'bat wrap'},
+  {g:'pin',k:'battery.config',t:'Cấu hình S/P',get:r=>r.battery?.config?esc(r.battery.config):NA,cls:'bat wrap'},
+  {g:'pin',k:'battery.pack_weight_kg',t:'Pin (kg)',get:r=>nz(r.battery?.pack_weight_kg)?r.battery.pack_weight_kg:NA,cls:'bat num',sort:r=>r.battery?.pack_weight_kg??-1},
+  {g:'pin',k:'discharge',t:'Dòng xả (A)',get:r=>{const b=r.battery;return (nz(b?.discharge_cont_a)||nz(b?.discharge_peak_a))?(nz(b.discharge_cont_a)?b.discharge_cont_a:'?')+(nz(b.discharge_peak_a)?' / '+b.discharge_peak_a:'')+(nz(b.discharge_cont_a)?' (tc/đỉnh)':' (đỉnh)'):NA},cls:'bat wrap',sort:r=>r.battery?.discharge_cont_a??r.battery?.discharge_peak_a??-1},
+  {g:'pin',k:'battery.charge_time_h',t:'Sạc đầy (h)',get:r=>nz(r.battery?.charge_time_h)?r.battery.charge_time_h:NA,cls:'bat num',sort:r=>r.battery?.charge_time_h??-1},
+  {g:'pin',k:'hotswap',t:'Hot-swap',get:r=>r.battery?.hot_swap==null?NA:(r.battery.hot_swap?`<span class="flag hot">Có</span>`:'Không'),cls:'bat'},
+  {g:'pin',k:'battery.special',t:'Tính năng pin đặc biệt',get:r=>r.battery?.special?esc(r.battery.special):NA,cls:'bat wrap wide'},
+  {g:'robot',k:'country',t:'Quốc gia',get:r=>esc(r.country||''),sort:r=>r.country||'~'},
+  {g:'robot',k:'year',t:'Năm',get:r=>nz(r.year)?r.year:NA,cls:'num',sort:r=>r.year??-1},
+  {g:'robot',k:'height_cm',t:'Cao (cm)',get:r=>nz(r.height_cm)?r.height_cm:NA,cls:'num',sort:r=>r.height_cm??-1},
+  {g:'robot',k:'weight_kg',t:'Nặng (kg)',get:r=>nz(r.weight_kg)?r.weight_kg:NA,cls:'num',sort:r=>r.weight_kg??-1},
+  {g:'robot',k:'dof',t:'DoF',get:r=>nz(r.dof)?r.dof:NA,cls:'num',sort:r=>+String(r.dof??-1).replace(/[^\d.].*$/,'')||-1},
+  {g:'robot',k:'speed_ms',t:'Tốc độ (m/s)',get:r=>nz(r.speed_ms)?r.speed_ms:NA,cls:'num',sort:r=>r.speed_ms??-1},
+  {g:'robot',k:'payload_kg',t:'Payload (kg)',get:r=>nz(r.payload_kg)?r.payload_kg:NA,cls:'num',sort:r=>r.payload_kg??-1},
+  {g:'robot',k:'runtime_h',t:'Runtime (h)',get:r=>nz(r.runtime_h)?r.runtime_h:NA,cls:'num',sort:r=>r.runtime_h??-1},
+  {g:'robot',k:'price',t:'Giá',get:r=>r.price?esc(r.price):NA,cls:'wrap'},
+];
+const GROUPS={pin:'Pin',robot:'Robot'};
+
+function renderHead(){
+  const cols=COLS;
+  const groups=[];
+  for(const c of cols){
+    if(groups.length&&groups[groups.length-1].g===c.g)groups[groups.length-1].n++;
+    else groups.push({g:c.g,n:1});
+  }
+  let row1=`<th class="idcell" rowspan="2" style="min-width:200px">Robot</th>`;
+  for(const g of groups)row1+=`<th class="group" colspan="${g.n}">${GROUPS[g.g]}</th>`;
+  let row2='';
+  for(const c of cols){
+    const arr=SORT.key===c.k?(SORT.dir>0?'▲':'▼'):'';
+    row2+=`<th data-k="${c.k}" class="${c.cls||''}">${c.t}<span class="arr">${arr}</span></th>`;
+  }
+  /* gán vào <thead> (KHÔNG phải <tr>) — innerHTML trên <tr> sẽ bị strip thẻ <tr>,
+     làm cả 2 hàng dồn vào 1 hàng → lệch cột */
+  $('#cmpHead').innerHTML='<tr>'+row1+'</tr><tr>'+row2+'</tr>';
+  $('#cmpHead').querySelectorAll('th[data-k]').forEach(th=>{
+    th.addEventListener('click',()=>{
+      const k=th.dataset.k;
+      SORT.dir=SORT.key===k?-SORT.dir:-1;SORT.key=k;render();
+    });
+  });
+}
+
+function sortRows(rows){
+  const col=COLS.find(c=>c.k===SORT.key);
+  if(!col)return rows;
+  const f=col.sort|| (r=>{const v=r[SORT.key];return typeof v==='number'?v:String(v??'~')});
+  return [...rows].sort((a,b)=>{const x=f(a),y=f(b);
+    if(typeof x==='number'&&typeof y==='number')return (x-y)*SORT.dir;
+    return String(x).localeCompare(String(y))*SORT.dir;});
+}
+
+function renderTable(rows){
+  const cols=COLS;
+  const srows=sortRows(rows);
+  $('#tbody').innerHTML=srows.map(r=>`
+    <tr data-name="${esc(r.name)}">
+      <td class="idcell">
+        ${r.image?`<img class="thumb" loading="lazy" src="${esc(r.image)}" alt="" onerror="this.outerHTML='<div class=\\'thumb ph\\'>no img</div>'">`:'<div class="thumb ph">no img</div>'}
+        <div class="rname">${esc(r.name)}<span class="mfr">${esc(r.manufacturer||'')}</span></div>
+      </td>
+      ${cols.map(c=>`<td class="${c.cls||''}">${c.get(r)}</td>`).join('')}
+    </tr>
+    <tr class="detail hidden" data-for="${esc(r.name)}"><td colspan="${cols.length+1}"></td></tr>
+  `).join('');
+  $('#tbody').querySelectorAll('tr[data-name]').forEach(tr=>{
+    tr.addEventListener('click',()=>{
+      const name=tr.dataset.name;
+      const dt=$(`tr.detail[data-for="${CSS.escape(name)}"]`);
+      if(expanded.has(name)){expanded.delete(name);dt.classList.add('hidden');updateRail();return}
+      expanded.add(name);
+      const r=ROBOTS.find(x=>x.name===name);
+      dt.querySelector('td').innerHTML=detailHTML(r);
+      dt.classList.remove('hidden');
+      updateRail();
+    });
+  });
+}
+
+function detailHTML(r){
+  const src=[['humanoid.guide',r.sources?.guide],['humanoid-robots.io',r.sources?.hrio],['NSX',r.sources?.manufacturer],['Khác',r.sources?.other]]
+    .filter(([,u])=>u).map(([n,u])=>`<a href="${esc(u)}" target="_blank" rel="noopener">${n}</a>`).join(' · ');
+  const kv=(k,v)=>v?`<div class="kv"><div class="k">${k}</div><div class="v">${v}</div></div>`:'';
+  const b=r.battery||{};
+  const dis=(nz(b.discharge_cont_a)||nz(b.discharge_peak_a))?(nz(b.discharge_cont_a)?b.discharge_cont_a+' A liên tục':'')+(nz(b.discharge_peak_a)?(nz(b.discharge_cont_a)?' · ':'')+b.discharge_peak_a+' A đỉnh':''):'';
+  return `<div class="detail-box">
+    <div class="detail-desc">${esc(r.description||((r.features||[]).slice(0,4).join(' · ')))}</div>
+    ${kv('Pin — dung lượng',[nz(capWh(r))?Math.round(capWh(r))+' Wh':'',nz(capAh(r))?capAh(r)+' Ah':'',b.capacity?'"'+b.capacity+'"':''].filter(Boolean).join(' · '))}
+    ${kv('Pin — điện áp / cấu hình',[nz(b.voltage_v)?b.voltage_v+' V':'',b.config||''].filter(Boolean).join(' · '))}
+    ${kv('Pin — khối lượng / dòng xả',[nz(b.pack_weight_kg)?b.pack_weight_kg+' kg':'',dis].filter(Boolean).join(' · '))}
+    ${kv('Pin — hình dáng / connector',[b.form_factor||'',b.connector||''].filter(Boolean).join(' · '))}
+    ${kv('Sạc',[nz(b.charge_time_h)?b.charge_time_h+' h sạc đầy':''].join(''))}
+    ${kv('Thay pin',b.hot_swap==null?'—':(b.hot_swap?'Có — '+swapType(b).label:'Không (sạc cố định)'))}
+    ${kv('Ghi chú pin',esc(b.special||''))}
+    ${kv('Kích thước',[nz(r.height_cm)?r.height_cm+' cm':'',nz(r.weight_kg)?r.weight_kg+' kg':''].filter(Boolean).join(' · '))}
+    ${kv('Vận hành',[nz(r.speed_ms)?r.speed_ms+' m/s':'',nz(r.payload_kg)?'payload '+r.payload_kg+' kg':'',nz(r.runtime_h)?'runtime ~'+r.runtime_h+' h':''].filter(Boolean).join(' · '))}
+    ${kv('Actuators',esc(r.actuators||''))}
+    ${kv('Use-cases',(r.usecases||[]).join(', '))}
+    ${kv('Features / Tags',(r.features||[]).join(', '))}
+    ${kv('CPU / GPU',esc(r.cpu_gpu||''))}
+    ${kv('Số ngón tay',esc(r.fingers||''))}
+    ${kv('Camera / Sensor',esc(r.cameras||''))}
+    ${kv('LLM integration',esc(r.llm||''))}
+    ${kv('OS',esc(r.os||''))}
+    ${kv('Kết nối',esc(r.connectivity||''))}
+    ${kv('Motor tech',esc(r.motor_tech||''))}
+    ${kv('Gear tech',esc(r.gear_tech||''))}
+    ${kv('Vật liệu khung',esc(r.material||''))}
+    ${kv('An toàn cạnh người',esc(String(r.safe_with_humans||'')))}
+    ${kv('Thị trường chính',esc(r.main_market||''))}
+    ${kv('Giá',esc(r.price||''))}
+    <div class="kv"><div class="k">Nguồn</div><div class="v">${src||'—'}</div></div>
+  </div>`;
+}
+
+/* -------- hot-swap section -------- */
+const MECH_COLOR={self:'var(--good)',dual:'var(--s3)',slide:'var(--s7)',quick:'var(--s1)'};
+function renderHotSwap(rows){
+  const CATS={self:'Robot tự đổi pin',dual:'Dual-pack · đổi không gián đoạn',slide:'Slide-rail · rút kéo nhanh',quick:'Quick-release · tháo lắp nhanh'};
+  const ORDER=['self','dual','slide','quick'];
+  const hs=rows.filter(r=>r.battery?.hot_swap);
+  $('#hsCount').textContent=`${hs.length}/${rows.length} robot có pin tháo-lắp nóng — chiến lược vận hành 24/7`;
+  $('#hsChips').innerHTML=ORDER.map(k=>{
+    const n=hs.filter(r=>swapType(r.battery).k===k).length;
+    return n?`<span class="hs-chip"><span class="dot" style="background:${MECH_COLOR[k]}"></span>${CATS[k]}: <b>&nbsp;${n}</b></span>`:'';
+  }).join('');
+  const sorted=[...hs].sort((a,b2)=>{
+    const ka=ORDER.indexOf(swapType(a.battery).k),kb=ORDER.indexOf(swapType(b2.battery).k);
+    return ka!==kb?ka-kb:a.name.localeCompare(b2.name);
+  });
+  $('#hsGrid').innerHTML=sorted.map(r=>{
+    const b=r.battery,st=swapType(b);
+    const pack=[nz(capWh(r))?Math.round(capWh(r))+' Wh':'',nz(capAh(r))?capAh(r)+' Ah':'',nz(b.voltage_v)?b.voltage_v+' V':''].filter(Boolean).join(' · ');
+    const note=(b.special||'').replace(/\s+/g,' ').trim();
+    return `<div class="hs-card">
+      ${r.image?`<img class="thumb" loading="lazy" src="${esc(r.image)}" alt="" onerror="this.style.display='none'">`:''}
+      <div class="body">
+        <div class="nm">${esc(r.name)}</div>
+        <div class="mf">${esc(r.manufacturer||'')}</div>
+        <span class="mech" style="background:${st.color}">${st.label}</span>
+        <div class="pack">${pack||'Chưa công bố dung lượng'}${nz(r.runtime_h)?' · ~'+r.runtime_h+' h/lần sạc':''}</div>
+        <div class="note" title="${esc(note)}">${esc(note)}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* -------- CSV export -------- */
+function exportCSV(){
+  const rows=currentRows();
+  const head=['Robot','Manufacturer','Country','Year','Loại pin','Dung lượng công bố','Wh','Ah','V','Cấu hình','Khối lượng pin kg','Dòng xả TC','Dòng xả đỉnh','Form','Connector','Sạc đầy h','Hot-swap','Cơ chế hot-swap','Tính năng pin','Runtime h','Chiều cao cm','Khối lượng kg','DoF','Tốc độ m/s','Payload kg','Actuators','CPU/GPU','Fingers','Cameras','LLM','OS','Kết nối','Motor','Gear','Vật liệu','Giá'];
+  const lines=[head.join(',')];
+  for(const r of rows){
+    const b=r.battery||{};
+    lines.push([r.name,r.manufacturer,r.country,r.year,b.type,b.capacity,capWh(r),capAh(r),b.voltage_v,b.config,b.pack_weight_kg,b.discharge_cont_a,b.discharge_peak_a,b.form_factor,b.connector,b.charge_time_h,b.hot_swap,b.hot_swap?swapType(b).label:'',b.special,r.runtime_h,r.height_cm,r.weight_kg,r.dof,r.speed_ms,r.payload_kg,r.actuators,r.cpu_gpu,r.fingers,r.cameras,r.llm,r.os,r.connectivity,r.motor_tech,r.gear_tech,r.material,r.price]
+      .map(v=>`"${String(v??'').replace(/"/g,'""')}"`).join(','));
+  }
+  const blob=new Blob(['﻿'+lines.join('\n')],{type:'text/csv;charset=utf-8'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='robot-battery-comparison.csv';a.click();
+}
+
+/* -------- master render -------- */
+function render(){
+  const rows=currentRows();
+  $('#countLabel').textContent=`${rows.length}/${ROBOTS.length} robot`;
+  renderTiles(rows);
+  hbar($('#chCap'),rows,capWh,'Wh','var(--s1)',d=>`<b>${esc(d.r.name)}</b>${esc(d.r.manufacturer||'')}<br>${Math.round(d.v)} Wh${nz(capAh(d.r))?' · '+capAh(d.r)+' Ah':''}${nz(d.r.battery?.voltage_v)?' · '+d.r.battery.voltage_v+' V':''} · ${chemBucket(d.r.battery)}`);
+  hbar($('#chRun'),rows,r=>r.runtime_h,'h','var(--s3)',d=>`<b>${esc(d.r.name)}</b>Runtime: ${d.v} h/lần sạc`);
+  voltChart(rows);
+  scatter(rows);
+  renderHotSwap(rows);
+  renderHead();
+  renderTable(rows);
+  updateRail();
+}
+
+/* -------- horizontal nav: ray đồng bộ + nút nổi -------- */
+const tw=document.querySelector('.tablewrap'),rail=$('#railWrap'),spacer=$('#railSpacer'),hnav=$('#hnav');
+function updateRail(){
+  if(!tw||!rail)return;
+  spacer.style.width=tw.scrollWidth+'px';
+  rail.style.display=tw.scrollWidth>tw.clientWidth+4?'block':'none';
+  updateHnav();
+}
+function updateHnav(){
+  if(!hnav||!tw)return;
+  const r=tw.getBoundingClientRect();
+  const visible=r.top<innerHeight-120&&r.bottom>160&&tw.scrollWidth>tw.clientWidth+4;
+  hnav.classList.toggle('hidden',!visible);
+}
+if(tw&&rail){
+  rail.addEventListener('scroll',()=>{tw.scrollLeft=rail.scrollLeft});
+  tw.addEventListener('scroll',()=>{rail.scrollLeft=tw.scrollLeft;updateHnav()});
+  $('#hnavL').addEventListener('click',()=>tw.scrollBy({left:-360,behavior:'smooth'}));
+  $('#hnavR').addEventListener('click',()=>tw.scrollBy({left:360,behavior:'smooth'}));
+  window.addEventListener('scroll',updateHnav,{passive:true});
+}
+
+/* -------- init -------- */
+function init(){
+  // populate filter selects
+  const countries=[...new Set(ROBOTS.map(r=>r.country).filter(Boolean))].sort();
+  $('#fCountry').innerHTML='<option value="">Tất cả</option>'+countries.map(c=>`<option>${esc(c)}</option>`).join('');
+  $('#fChem').innerHTML='<option value="">Tất cả</option>'+Object.keys(CHEM_COLOR).map(c=>`<option>${c}</option>`).join('');
+  ['q','fCountry','fChem','fSwap'].forEach(id=>$('#'+id).addEventListener('input',render));
+  $('#csvBtn').addEventListener('click',exportCSV);
+  const d=new Date();
+  $('#updatedLabel').textContent='Cập nhật: '+d.toLocaleDateString('vi-VN')+' · '+ROBOTS.length+' robot · giao diện v1.4';
+  render();
+}
+document.addEventListener('DOMContentLoaded',init);
+window.addEventListener('resize',()=>{scatter(currentRows());updateRail();updateHnav()});
+</script>
+</body>
+</html>
