@@ -7,7 +7,7 @@ Nguồn cập nhật dữ liệu: sửa `robots-data.js` → commit & push.
 
 ## Nội dung
 
-- **67 robot** — Unitree, Tesla Optimus, Figure, Atlas, Digit, Apollo, NEO, UBTECH Walker, Fourier GR, Booster, AgiBot, EngineAI, XPENG IRON, Kepler, Galbot, Dobot, Pudu, DEEP Robotics, LimX, NEURA 4NE-1, TALOS, iCub, NAO, Kaleido, VinMotion Motion 2 (VN)…
+- **94 robot** — Unitree, Tesla Optimus, Figure, Atlas, Digit, Apollo, NEO, UBTECH Walker/U1, Fourier GR/N1, Booster, AgiBot A2/A3/G2/X2, EngineAI, XPENG IRON, Kepler, Galbot, Dobot, Pudu, DEEP Robotics, LimX, NEURA 4NE-1, TALOS, iCub, NAO, Kaleido, Kapex 01 (LG-KIST), Tiangong Ultra, Honor Lightning, **VinMotion Motion 2 & VinRobotics VR-H3 (VN)**…
 - **12 cột pin**: loại pin (Li-ion / LiFePO4 / semi-solid / solid-state), dung lượng Wh & Ah, điện áp, cấu hình S/P, khối lượng pack, dòng xả, form factor, connector, giờ sạc, hot-swap, tính năng đặc biệt
 - **Cột thông số robot**: năm, quốc gia, chiều cao, khối lượng, DoF, tốc độ, payload, runtime, giá
 - **Mở rộng** (click hàng): CPU/GPU, camera, LLM, OS, kết nối, motor/gear tech, vật liệu, an toàn, nguồn tham khảo
