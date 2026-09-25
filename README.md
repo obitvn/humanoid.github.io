@@ -1,6 +1,6 @@
 # So Sánh Pin Robot Humanoid — Humanoid Battery Comparison
 
-Bảng so sánh trực quan về **pin và cấu hình của 67 robot humanoid** trên thị trường (16 quốc gia), phục vụ nghiên cứu thiết kế pin/BMS.
+Bảng so sánh trực quan về **pin và cấu hình của 94 robot humanoid** trên thị trường (16 quốc gia), phục vụ nghiên cứu thiết kế pin/BMS.
 
 Live: **https://obitvn.github.io/humanoid.github.io/** (`index.html` — dashboard)
 Nguồn cập nhật dữ liệu: sửa `robots-data.js` → commit & push.
@@ -11,7 +11,7 @@ Nguồn cập nhật dữ liệu: sửa `robots-data.js` → commit & push.
 - **12 cột pin**: loại pin (Li-ion / LiFePO4 / semi-solid / solid-state), dung lượng Wh & Ah, điện áp, cấu hình S/P, khối lượng pack, dòng xả, form factor, connector, giờ sạc, hot-swap, tính năng đặc biệt
 - **Cột thông số robot**: năm, quốc gia, chiều cao, khối lượng, DoF, tốc độ, payload, runtime, giá
 - **Mở rộng** (click hàng): CPU/GPU, camera, LLM, OS, kết nối, motor/gear tech, vật liệu, an toàn, nguồn tham khảo
-- **Dashboard**: 6 stat tiles, 4 biểu đồ (dung lượng Wh, runtime, scatter Wh vs kg theo loại pin, phân bố điện áp theo dải S), section phân tích hot-swap 34 robot theo 4 cơ chế
+- **Dashboard**: 6 stat tiles, 4 biểu đồ (dung lượng Wh, runtime, scatter Wh vs kg theo loại pin, phân bố điện áp theo dải S), section phân tích hot-swap 43 robot theo 4 cơ chế
 - Search, filter (quốc gia / loại pin / hot-swap), sort mọi cột, xuất CSV
 
 ## Cập nhật dữ liệu
