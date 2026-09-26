@@ -225,6 +225,13 @@ footer{margin-top:44px;border-top:1px solid var(--border);padding-top:18px;color
     <input type="search" id="q" placeholder="Tìm robot, nhà sản xuất, loại pin…">
     <label>Quốc gia <select id="fCountry"><option value="">Tất cả</option></select></label>
     <label>Loại pin <select id="fChem"><option value="">Tất cả</option></select></label>
+    <label>Chiều cao <select id="fHeight">
+      <option value="">Tất cả</option>
+      <option value="150">≥ 1,5 m</option>
+      <option value="160">≥ 1,6 m</option>
+      <option value="170">≥ 1,7 m</option>
+      <option value="lt150">&lt; 1,5 m</option>
+    </select></label>
     <label>Hot-swap <select id="fSwap">
       <option value="">Tất cả</option><option value="yes">Có</option><option value="no">Không</option>
     </select></label>
@@ -337,10 +344,15 @@ function swapType(b){
 /* -------- filters -------- */
 function currentRows(){
   const q=$('#q').value.trim().toLowerCase();
-  const fc=$('#fCountry').value, ch=$('#fChem').value, sw=$('#fSwap').value;
+  const fc=$('#fCountry').value, ch=$('#fChem').value, sw=$('#fSwap').value, fh=$('#fHeight').value;
   return ROBOTS.filter(r=>{
     if(fc&&r.country!==fc)return false;
     if(ch&&chemBucket(r.battery)!==ch)return false;
+    if(fh){
+      if(!nz(r.height_cm))return false;
+      if(fh==='lt150'){if(+r.height_cm>=150)return false}
+      else if(+r.height_cm<+fh)return false;
+    }
     if(sw==='yes'&&!r.battery?.hot_swap)return false;
     if(sw==='no'&&r.battery?.hot_swap)return false;
     if(q){
@@ -653,7 +665,7 @@ function init(){
   const countries=[...new Set(ROBOTS.map(r=>r.country).filter(Boolean))].sort();
   $('#fCountry').innerHTML='<option value="">Tất cả</option>'+countries.map(c=>`<option>${esc(c)}</option>`).join('');
   $('#fChem').innerHTML='<option value="">Tất cả</option>'+Object.keys(CHEM_COLOR).map(c=>`<option>${c}</option>`).join('');
-  ['q','fCountry','fChem','fSwap'].forEach(id=>$('#'+id).addEventListener('input',render));
+  ['q','fCountry','fChem','fSwap','fHeight'].forEach(id=>$('#'+id).addEventListener('input',render));
   $('#csvBtn').addEventListener('click',exportCSV);
   const d=new Date();
   $('#updatedLabel').textContent='Cập nhật: '+d.toLocaleDateString('vi-VN')+' · '+ROBOTS.length+' robot · giao diện v1.4';
