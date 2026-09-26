@@ -150,7 +150,8 @@ const ROBOTS = [
    "hrio": null,
    "manufacturer": "https://www.agibot.com/products/A2_W",
    "other": "https://blog.robozaps.com (A2/A2-W pricing and battery coverage)"
-  }
+  },
+  "op_temp": "0…45 °C"
  },
  {
   "name": "AgiBot A3",
@@ -894,7 +895,8 @@ const ROBOTS = [
    "hrio": "",
    "manufacturer": "https://casbot.tech/product/02",
    "other": ""
-  }
+  },
+  "op_temp": "5…40 °C (25–85% RH)"
  },
  {
   "name": "DEEP Robotics DR02",
@@ -955,7 +957,8 @@ const ROBOTS = [
    "hrio": "",
    "manufacturer": "https://www.deeprobotics.cn/",
    "other": ""
-  }
+  },
+  "op_temp": "−20…55 °C (IP66)"
  },
  {
   "name": "Dobot Atom",
@@ -3974,7 +3977,8 @@ const ROBOTS = [
    "hrio": "",
    "manufacturer": "https://bostondynamics.com/atlas",
    "other": "https://bostondynamics.com/wp-content/uploads/2026/01/atlas-spec-sheet.pdf"
-  }
+  },
+  "op_temp": "−20…40 °C (IP67)"
  },
  {
   "name": "Digit (v2 / Gen 4, 2023)",
@@ -4959,7 +4963,8 @@ const ROBOTS = [
    "hrio": "",
    "manufacturer": "https://www.oversonicrobotics.com/robee-f/",
    "other": ""
-  }
+  },
+  "op_temp": "5…50 °C"
  },
  {
   "name": "Kaleido 9",
@@ -5578,7 +5583,8 @@ const ROBOTS = [
    "hrio": "",
    "manufacturer": "https://faunarobotics.com/",
    "other": "https://arxiv.org/abs/2601.18963"
-  }
+  },
+  "op_temp": "10…30 °C (indoor)"
  },
  {
   "name": "NEO (Gamma)",
