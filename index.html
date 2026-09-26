@@ -181,6 +181,8 @@ table.cmp thead th.idcell{position:sticky;left:0;top:0;background:#141415;z-inde
 table.cmp tbody tr:hover td.idcell{background:#1f1f20}
 table.cmp .thumb{width:82px;height:82px}
 table.cmp .rname{font-size:12px}
+/* giá trị ước lượng */
+.est{color:var(--text-muted);font-style:italic;border-bottom:1px dotted var(--text-muted);cursor:help}
 .thumb{width:44px;height:44px;border-radius:8px;object-fit:cover;background:#0d0d0d;border:1px solid var(--baseline);flex:none}
 .thumb.ph{display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:9px;text-align:center}
 .rname{font-weight:600;line-height:1.25}
@@ -321,6 +323,13 @@ function capWh(r){
   if(w){let wh=+w[1]; if(/kwh/i.test(c))wh*=1000; return wh;}
   return null;
 }
+/* ước lượng khối lượng pack từ cell 21700: 70 g, 4,8 Ah, 3,7 V = 17,76 Wh/cell (≈254 Wh/kg cell)
+   — hiệu chuẩn với Fourier GR-2/GR-3 thực tế: pack nặng hơn cell thuần ~1,35× */
+const CELL_WH=4.8*3.7, CELL_KG=0.07;
+function estCells(r){const wh=capWh(r);return nz(wh)?Math.ceil(wh/CELL_WH):null}
+function estKg(r){const n=estCells(r);return n?+(n*CELL_KG).toFixed(1):null}
+function packKg(r){return nz(r.battery?.pack_weight_kg)?+r.battery.pack_weight_kg:estKg(r)}
+
 /* Ah = Wh / V (ưu tiên số công bố Ah nếu có) */
 function capAh(r){
   const c=r.battery?.capacity||'';
@@ -368,7 +377,8 @@ function renderTiles(rows){
   const whs=rows.map(capWh).filter(nz);
   const runs=rows.map(r=>r.runtime_h).filter(nz);
   const vols=rows.map(r=>r.battery?.voltage_v).filter(nz);
-  const packs=rows.map(r=>r.battery?.pack_weight_kg).filter(nz);
+  const packs=rows.map(packKg).filter(nz);
+  const realPacks=rows.filter(r=>nz(r.battery?.pack_weight_kg)).length;
   const swap=rows.filter(r=>r.battery?.hot_swap).length;
   const med=a=>{if(!a.length)return NA;const s=[...a].sort((x,y)=>x-y);return s[Math.floor(s.length/2)]};
   const whMed=med(whs);
@@ -380,7 +390,7 @@ function renderTiles(rows){
     {l:'Dung lượng pin trung vị',v:nz(whMed)?Math.round(whMed)+' Wh':NA,s:(nz(ahMed)?'≈ '+ahMed+' Ah · ':'')+whs.length+' robot có dữ liệu'},
     {l:'Điện áp pack trung vị',v:nz(med(vols))?med(vols)+' V':NA,s:vols.length+' robot có dữ liệu'},
     {l:'Runtime trung vị',v:nz(med(runs))?med(runs)+' h':NA,s:runs.length+' robot có dữ liệu'},
-    {l:'Khối lượng pack trung vị',v:nz(med(packs))?med(packs)+' kg':NA,s:packs.length+' robot có dữ liệu'},
+    {l:'Khối lượng pack trung vị',v:nz(med(packs))?Math.round(med(packs)*10)/10+' kg':NA,s:realPacks+' chính hãng · '+(packs.length-realPacks)+' ước tính (cell 21700)'},
     {l:'Pin tháo-lắp nóng (hot-swap)',v:swap+'/'+rows.length,s:nz(denVal)?' mật độ năng lượng TB ≈ '+Math.round(denVal)+' Wh/kg':''},
   ];
   $('#tiles').innerHTML=tiles.map(t=>`<div class="tile"><div class="lbl">${t.l}</div><div class="val">${t.v}</div><div class="sub">${t.s}</div></div>`).join('');
@@ -430,7 +440,7 @@ function scatter(rows){
   svg.innerHTML=g;
   svg.querySelectorAll('.pt').forEach(p=>{
     const d=data.find(q=>q.r.name===p.dataset.n);
-    p.addEventListener('mousemove',e=>showTip(e,`<b>${esc(d.r.name)}</b>${esc(d.r.manufacturer)}<br>${Math.round(d.y)} Wh${nz(capAh(d.r))?' · '+capAh(d.r)+' Ah':''} · ${d.x} kg · ${chemBucket(d.r.battery)}${nz(d.r.battery?.voltage_v)?' · '+d.r.battery.voltage_v+' V':''}`));
+    p.addEventListener('mousemove',e=>showTip(e,`<b>${esc(d.r.name)}</b>${esc(d.r.manufacturer)}<br>${Math.round(d.y)} Wh${nz(capAh(d.r))?' · '+capAh(d.r)+' Ah':''} · robot ${d.x} kg${estKg(d.r)!=null?' · pin ~'+estKg(d.r)+' kg':''} · ${chemBucket(d.r.battery)}${nz(d.r.battery?.voltage_v)?' · '+d.r.battery.voltage_v+' V':''}`));
     p.addEventListener('mouseleave',hideTip);
   });
   legend.innerHTML=Object.keys(CHEM_COLOR).map(k=>`<span class="li"><span class="sw" style="background:${CHEM_COLOR[k]}"></span>${k}</span>`).join('');
@@ -462,7 +472,11 @@ const COLS=[
   {g:'pin',k:'battery.voltage_v',t:'V (pin)',get:r=>nz(r.battery?.voltage_v)?r.battery.voltage_v:NA,cls:'bat num',sort:r=>r.battery?.voltage_v??-1},
   {g:'pin',k:'battery.type',t:'Loại pin',get:r=>r.battery?.type?esc(r.battery.type):NA,cls:'bat wrap'},
   {g:'pin',k:'battery.config',t:'Cấu hình S/P',get:r=>r.battery?.config?esc(r.battery.config):NA,cls:'bat wrap'},
-  {g:'pin',k:'battery.pack_weight_kg',t:'Pin (kg)',get:r=>nz(r.battery?.pack_weight_kg)?r.battery.pack_weight_kg:NA,cls:'bat num',sort:r=>r.battery?.pack_weight_kg??-1},
+  {g:'pin',k:'battery.pack_weight_kg',t:'Pin (kg)',get:r=>{
+    if(nz(r.battery?.pack_weight_kg))return r.battery.pack_weight_kg;
+    const e=estKg(r);
+    return e!=null?`<span class="est" title="Ước tính: ${estCells(r)} cell 21700 × 70 g (4,8 Ah · 3,7 V) — chưa gồm vỏ/BMS/tản nhiệt; hiệu chuẩn Fourier GR-2/GR-3: pack thực ×1,34–1,38; GR N1 (pack nhỏ): ×1,68">~${e}</span>`:NA;
+  },cls:'bat num',sort:r=>packKg(r)??-1},
   {g:'pin',k:'discharge',t:'Dòng xả (A)',get:r=>{const b=r.battery;return (nz(b?.discharge_cont_a)||nz(b?.discharge_peak_a))?(nz(b.discharge_cont_a)?b.discharge_cont_a:'?')+(nz(b.discharge_peak_a)?' / '+b.discharge_peak_a:'')+(nz(b.discharge_cont_a)?' (tc/đỉnh)':' (đỉnh)'):NA},cls:'bat wrap',sort:r=>r.battery?.discharge_cont_a??r.battery?.discharge_peak_a??-1},
   {g:'pin',k:'battery.charge_time_h',t:'Sạc đầy (h)',get:r=>nz(r.battery?.charge_time_h)?r.battery.charge_time_h:NA,cls:'bat num',sort:r=>r.battery?.charge_time_h??-1},
   {g:'pin',k:'hotswap',t:'Hot-swap',get:r=>r.battery?.hot_swap==null?NA:(r.battery.hot_swap?`<span class="flag hot">Có</span>`:'Không'),cls:'bat'},
@@ -550,7 +564,8 @@ function detailHTML(r){
     <div class="detail-desc">${esc(r.description||((r.features||[]).slice(0,4).join(' · ')))}</div>
     ${kv('Pin — dung lượng',[nz(capWh(r))?Math.round(capWh(r))+' Wh':'',nz(capAh(r))?capAh(r)+' Ah':'',b.capacity?'"'+b.capacity+'"':''].filter(Boolean).join(' · '))}
     ${kv('Pin — điện áp / cấu hình',[nz(b.voltage_v)?b.voltage_v+' V':'',b.config||''].filter(Boolean).join(' · '))}
-    ${kv('Pin — khối lượng / dòng xả',[nz(b.pack_weight_kg)?b.pack_weight_kg+' kg':'',dis].filter(Boolean).join(' · '))}
+    ${kv('Pin — khối lượng',[nz(b.pack_weight_kg)?b.pack_weight_kg+' kg (chính hãng)':(estKg(r)!=null?`~${estKg(r)} kg cell thuần — ước lượng ${estCells(r)} cell 21700 × 70 g; pack thực ≈ ×1,34–1,68 (vỏ/BMS/tản nhiệt, hiệu chuẩn Fourier GR)`:'')].join(''))}
+    ${kv('Pin — dòng xả',dis)}
     ${kv('Pin — hình dáng / connector',[b.form_factor||'',b.connector||''].filter(Boolean).join(' · '))}
     ${kv('Sạc',[nz(b.charge_time_h)?b.charge_time_h+' h sạc đầy':''].join(''))}
     ${kv('Thay pin',b.hot_swap==null?'—':(b.hot_swap?'Có — '+swapType(b).label:'Không (sạc cố định)'))}
@@ -611,11 +626,11 @@ function renderHotSwap(rows){
 /* -------- CSV export -------- */
 function exportCSV(){
   const rows=currentRows();
-  const head=['Robot','Manufacturer','Country','Year','Loại pin','Dung lượng công bố','Wh','Ah','V','Cấu hình','Khối lượng pin kg','Dòng xả TC','Dòng xả đỉnh','Form','Connector','Sạc đầy h','Hot-swap','Cơ chế hot-swap','Tính năng pin','Runtime h','Chiều cao cm','Khối lượng kg','DoF','Tốc độ m/s','Payload kg','Actuators','CPU/GPU','Fingers','Cameras','LLM','OS','Kết nối','Motor','Gear','Vật liệu','Giá'];
+  const head=['Robot','Manufacturer','Country','Year','Loại pin','Dung lượng công bố','Wh','Ah','V','Cấu hình','Khối lượng pin kg','Pin kg (ước tính)','Dòng xả TC','Dòng xả đỉnh','Form','Connector','Sạc đầy h','Hot-swap','Cơ chế hot-swap','Tính năng pin','Runtime h','Chiều cao cm','Khối lượng kg','DoF','Tốc độ m/s','Payload kg','Actuators','CPU/GPU','Fingers','Cameras','LLM','OS','Kết nối','Motor','Gear','Vật liệu','Giá'];
   const lines=[head.join(',')];
   for(const r of rows){
     const b=r.battery||{};
-    lines.push([r.name,r.manufacturer,r.country,r.year,b.type,b.capacity,capWh(r),capAh(r),b.voltage_v,b.config,b.pack_weight_kg,b.discharge_cont_a,b.discharge_peak_a,b.form_factor,b.connector,b.charge_time_h,b.hot_swap,b.hot_swap?swapType(b).label:'',b.special,r.runtime_h,r.height_cm,r.weight_kg,r.dof,r.speed_ms,r.payload_kg,r.actuators,r.cpu_gpu,r.fingers,r.cameras,r.llm,r.os,r.connectivity,r.motor_tech,r.gear_tech,r.material,r.price]
+    lines.push([r.name,r.manufacturer,r.country,r.year,b.type,b.capacity,capWh(r),capAh(r),b.voltage_v,b.config,b.pack_weight_kg,estKg(r),b.discharge_cont_a,b.discharge_peak_a,b.form_factor,b.connector,b.charge_time_h,b.hot_swap,b.hot_swap?swapType(b).label:'',b.special,r.runtime_h,r.height_cm,r.weight_kg,r.dof,r.speed_ms,r.payload_kg,r.actuators,r.cpu_gpu,r.fingers,r.cameras,r.llm,r.os,r.connectivity,r.motor_tech,r.gear_tech,r.material,r.price]
       .map(v=>`"${String(v??'').replace(/"/g,'""')}"`).join(','));
   }
   const blob=new Blob(['﻿'+lines.join('\n')],{type:'text/csv;charset=utf-8'});
