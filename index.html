@@ -329,6 +329,12 @@ const CELL_WH=4.8*3.7, CELL_KG=0.07;
 function estCells(r){const wh=capWh(r);return nz(wh)?Math.ceil(wh/CELL_WH):null}
 function estKg(r){const n=estCells(r);return n?+(n*CELL_KG).toFixed(1):null}
 function packKg(r){return nz(r.battery?.pack_weight_kg)?+r.battery.pack_weight_kg:estKg(r)}
+/* nhãn khối lượng pin cho tooltip: số thật, hoặc ~ước tính từ cell 21700 */
+function kgTip(r){
+  if(nz(r.battery?.pack_weight_kg))return `pin ${r.battery.pack_weight_kg} kg`;
+  const e=estKg(r);
+  return e!=null?`pin ~${e} kg (ước tính)`:'';
+}
 
 /* Ah = Wh / V (ưu tiên số công bố Ah nếu có) */
 function capAh(r){
@@ -440,7 +446,7 @@ function scatter(rows){
   svg.innerHTML=g;
   svg.querySelectorAll('.pt').forEach(p=>{
     const d=data.find(q=>q.r.name===p.dataset.n);
-    p.addEventListener('mousemove',e=>showTip(e,`<b>${esc(d.r.name)}</b>${esc(d.r.manufacturer)}<br>${Math.round(d.y)} Wh${nz(capAh(d.r))?' · '+capAh(d.r)+' Ah':''} · robot ${d.x} kg${estKg(d.r)!=null?' · pin ~'+estKg(d.r)+' kg':''} · ${chemBucket(d.r.battery)}${nz(d.r.battery?.voltage_v)?' · '+d.r.battery.voltage_v+' V':''}`));
+    p.addEventListener('mousemove',e=>showTip(e,`<b>${esc(d.r.name)}</b>${esc(d.r.manufacturer)}<br>${Math.round(d.y)} Wh${nz(capAh(d.r))?' · '+capAh(d.r)+' Ah':''} · robot ${d.x} kg${estKg(d.r)!=null?' · pin ~'+estKg(d.r)+' kg':''} · ${chemBucket(d.r.battery)}${nz(d.r.battery?.voltage_v)?' · '+d.r.battery.voltage_v+' V':''}${d.r.op_temp?'<br>Nhiệt độ hoạt động: '+esc(d.r.op_temp):''}`));
     p.addEventListener('mouseleave',hideTip);
   });
   legend.innerHTML=Object.keys(CHEM_COLOR).map(k=>`<span class="li"><span class="sw" style="background:${CHEM_COLOR[k]}"></span>${k}</span>`).join('');
@@ -569,6 +575,7 @@ function detailHTML(r){
     ${kv('Pin — hình dáng / connector',[b.form_factor||'',b.connector||''].filter(Boolean).join(' · '))}
     ${kv('Sạc',[nz(b.charge_time_h)?b.charge_time_h+' h sạc đầy':''].join(''))}
     ${kv('Thay pin',b.hot_swap==null?'—':(b.hot_swap?'Có — '+swapType(b).label:'Không (sạc cố định)'))}
+    ${kv('Nhiệt độ hoạt động',esc(r.op_temp||''))}
     ${kv('Ghi chú pin',esc(b.special||''))}
     ${kv('Kích thước',[nz(r.height_cm)?r.height_cm+' cm':'',nz(r.weight_kg)?r.weight_kg+' kg':''].filter(Boolean).join(' · '))}
     ${kv('Vận hành',[nz(r.speed_ms)?r.speed_ms+' m/s':'',nz(r.payload_kg)?'payload '+r.payload_kg+' kg':'',nz(r.runtime_h)?'runtime ~'+r.runtime_h+' h':''].filter(Boolean).join(' · '))}
@@ -626,11 +633,11 @@ function renderHotSwap(rows){
 /* -------- CSV export -------- */
 function exportCSV(){
   const rows=currentRows();
-  const head=['Robot','Manufacturer','Country','Year','Loại pin','Dung lượng công bố','Wh','Ah','V','Cấu hình','Khối lượng pin kg','Pin kg (ước tính)','Dòng xả TC','Dòng xả đỉnh','Form','Connector','Sạc đầy h','Hot-swap','Cơ chế hot-swap','Tính năng pin','Runtime h','Chiều cao cm','Khối lượng kg','DoF','Tốc độ m/s','Payload kg','Actuators','CPU/GPU','Fingers','Cameras','LLM','OS','Kết nối','Motor','Gear','Vật liệu','Giá'];
+  const head=['Robot','Manufacturer','Country','Year','Loại pin','Dung lượng công bố','Wh','Ah','V','Cấu hình','Khối lượng pin kg','Pin kg (ước tính)','Dòng xả TC','Dòng xả đỉnh','Form','Connector','Sạc đầy h','Hot-swap','Cơ chế hot-swap','Tính năng pin','Nhiệt độ hoạt động','Runtime h','Chiều cao cm','Khối lượng kg','DoF','Tốc độ m/s','Payload kg','Actuators','CPU/GPU','Fingers','Cameras','LLM','OS','Kết nối','Motor','Gear','Vật liệu','Giá'];
   const lines=[head.join(',')];
   for(const r of rows){
     const b=r.battery||{};
-    lines.push([r.name,r.manufacturer,r.country,r.year,b.type,b.capacity,capWh(r),capAh(r),b.voltage_v,b.config,b.pack_weight_kg,estKg(r),b.discharge_cont_a,b.discharge_peak_a,b.form_factor,b.connector,b.charge_time_h,b.hot_swap,b.hot_swap?swapType(b).label:'',b.special,r.runtime_h,r.height_cm,r.weight_kg,r.dof,r.speed_ms,r.payload_kg,r.actuators,r.cpu_gpu,r.fingers,r.cameras,r.llm,r.os,r.connectivity,r.motor_tech,r.gear_tech,r.material,r.price]
+    lines.push([r.name,r.manufacturer,r.country,r.year,b.type,b.capacity,capWh(r),capAh(r),b.voltage_v,b.config,b.pack_weight_kg,estKg(r),b.discharge_cont_a,b.discharge_peak_a,b.form_factor,b.connector,b.charge_time_h,b.hot_swap,b.hot_swap?swapType(b).label:'',b.special,r.op_temp||'',r.runtime_h,r.height_cm,r.weight_kg,r.dof,r.speed_ms,r.payload_kg,r.actuators,r.cpu_gpu,r.fingers,r.cameras,r.llm,r.os,r.connectivity,r.motor_tech,r.gear_tech,r.material,r.price]
       .map(v=>`"${String(v??'').replace(/"/g,'""')}"`).join(','));
   }
   const blob=new Blob(['﻿'+lines.join('\n')],{type:'text/csv;charset=utf-8'});
@@ -642,8 +649,8 @@ function render(){
   const rows=currentRows();
   $('#countLabel').textContent=`${rows.length}/${ROBOTS.length} robot`;
   renderTiles(rows);
-  hbar($('#chCap'),rows,capWh,'Wh','var(--s1)',d=>`<b>${esc(d.r.name)}</b>${esc(d.r.manufacturer||'')}<br>${Math.round(d.v)} Wh${nz(capAh(d.r))?' · '+capAh(d.r)+' Ah':''}${nz(d.r.battery?.voltage_v)?' · '+d.r.battery.voltage_v+' V':''} · ${chemBucket(d.r.battery)}`);
-  hbar($('#chRun'),rows,r=>r.runtime_h,'h','var(--s3)',d=>`<b>${esc(d.r.name)}</b>Runtime: ${d.v} h/lần sạc`);
+  hbar($('#chCap'),rows,capWh,'Wh','var(--s1)',d=>`<b>${esc(d.r.name)}</b>${esc(d.r.manufacturer||'')}<br>${Math.round(d.v)} Wh${nz(capAh(d.r))?' · '+capAh(d.r)+' Ah':''}${nz(d.r.battery?.voltage_v)?' · '+d.r.battery.voltage_v+' V':''} · ${chemBucket(d.r.battery)}${kgTip(d.r)?' · '+kgTip(d.r):''}${d.r.op_temp?'<br>Nhiệt độ hoạt động: '+esc(d.r.op_temp):''}`);
+  hbar($('#chRun'),rows,r=>r.runtime_h,'h','var(--s3)',d=>`<b>${esc(d.r.name)}</b>Runtime: ${d.v} h/lần sạc${kgTip(d.r)?' · '+kgTip(d.r):''}${nz(capWh(d.r))?' · '+Math.round(capWh(d.r))+' Wh':''}`);
   voltChart(rows);
   scatter(rows);
   renderHotSwap(rows);
