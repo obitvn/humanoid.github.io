@@ -599,22 +599,29 @@ function detailHTML(r){
 }
 
 /* -------- hot-swap section -------- */
-const MECH_COLOR={self:'var(--good)',dual:'var(--s3)',slide:'var(--s7)',quick:'var(--s1)'};
+const MECH_COLOR={self:'var(--good)',dual:'var(--s3)',slide:'var(--s7)',quick:'var(--s1)',focus:'var(--s2)'};
+/* 3 robot trọng điểm (không đổi pin) — luôn hiển thị đầu mục để đối chiếu chiến lược */
+const FOCUS_SWAP=['Tesla Optimus Gen 2.5','Figure 03','Digit 5'];
+function chargeStrategy(r){
+  const t=((r.battery?.form_factor||'')+' '+(r.battery?.connector||'')+' '+(r.battery?.special||'')).toLowerCase();
+  /* nhận diện theo thứ tự đặc trưng: bàn chân (Figure) → fleet (Digit 5) → tự dock (Optimus) */
+  if(/bàn chân|qua chân|feet/.test(t))return{k:'focus',label:'Sạc không dây 2 kW qua chân · không đổi pin',color:'var(--s2)'};
+  if(/fleet|xoay vòng/.test(t))return{k:'focus',label:'Xoay fleet + fast-charge 9 phút · không đổi pin',color:'var(--s2)'};
+  if(/tự dock|tự cắm|autonomous/.test(t))return{k:'focus',label:'Sạc tự trị (tự dock) · không đổi pin',color:'var(--s2)'};
+  return{k:'focus',label:'Không đổi pin — sạc thay thế',color:'var(--s2)'};
+}
 function renderHotSwap(rows){
   const CATS={self:'Robot tự đổi pin',dual:'Dual-pack · đổi không gián đoạn',slide:'Slide-rail · rút kéo nhanh',quick:'Quick-release · tháo lắp nhanh'};
   const ORDER=['self','dual','slide','quick'];
   const hs=rows.filter(r=>r.battery?.hot_swap);
-  $('#hsCount').textContent=`${hs.length}/${rows.length} robot có pin tháo-lắp nóng — chiến lược vận hành 24/7`;
-  $('#hsChips').innerHTML=ORDER.map(k=>{
+  const focus=rows.filter(r=>FOCUS_SWAP.includes(r.name));
+  $('#hsCount').textContent=`${hs.length}/${rows.length} robot có pin tháo-lắp nóng · ${focus.length} robot trọng điểm (US) KHÔNG đổi pin — đối chiếu chiến lược`;
+  $('#hsChips').innerHTML=(focus.length?`<span class="hs-chip"><span class="dot" style="background:${MECH_COLOR.focus}"></span>★ Trọng điểm — không đổi pin: <b>&nbsp;${focus.length}</b></span>`:'')+ORDER.map(k=>{
     const n=hs.filter(r=>swapType(r.battery).k===k).length;
     return n?`<span class="hs-chip"><span class="dot" style="background:${MECH_COLOR[k]}"></span>${CATS[k]}: <b>&nbsp;${n}</b></span>`:'';
   }).join('');
-  const sorted=[...hs].sort((a,b2)=>{
-    const ka=ORDER.indexOf(swapType(a.battery).k),kb=ORDER.indexOf(swapType(b2.battery).k);
-    return ka!==kb?ka-kb:a.name.localeCompare(b2.name);
-  });
-  $('#hsGrid').innerHTML=sorted.map(r=>{
-    const b=r.battery,st=swapType(b);
+  const card=(r,st)=>{
+    const b=r.battery;
     const pack=[nz(capWh(r))?Math.round(capWh(r))+' Wh':'',nz(capAh(r))?capAh(r)+' Ah':'',nz(b.voltage_v)?b.voltage_v+' V':''].filter(Boolean).join(' · ');
     const note=(b.special||'').replace(/\s+/g,' ').trim();
     return `<div class="hs-card">
@@ -627,7 +634,12 @@ function renderHotSwap(rows){
         <div class="note" title="${esc(note)}">${esc(note)}</div>
       </div>
     </div>`;
-  }).join('');
+  };
+  const sorted=[...hs].sort((a,b2)=>{
+    const ka=ORDER.indexOf(swapType(a.battery).k),kb=ORDER.indexOf(swapType(b2.battery).k);
+    return ka!==kb?ka-kb:a.name.localeCompare(b2.name);
+  });
+  $('#hsGrid').innerHTML=focus.map(r=>card(r,chargeStrategy(r))).join('')+sorted.map(r=>card(r,swapType(r.battery))).join('');
 }
 
 /* -------- CSV export -------- */
