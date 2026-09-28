@@ -4080,7 +4080,7 @@ const ROBOTS = [
   "llm": "",
   "material": "",
   "battery": {
-   "type": "Fast-charging battery system (chemistry and capacity not disclosed)",
+   "type": "Li-ion (chemistry không công bố)",
    "capacity": "Not disclosed (90-min runtime)",
    "capacity_wh": null,
    "voltage_v": null,
@@ -4088,17 +4088,17 @@ const ROBOTS = [
    "pack_weight_kg": null,
    "discharge_cont_a": null,
    "discharge_peak_a": null,
-   "form_factor": "Internal battery with autonomous docking to a fast-charging station",
+   "form_factor": "Pack nội bộ torso, cổng sạc phía sau thân; sạc qua dock tự hành — KHÔNG đổi pin vật lý",
    "connector": "",
    "charge_time_h": 0.15,
    "hot_swap": null,
-   "special": "Runtime 90 phút; sạc lại 9 phút (xác nhận lại). MỚI: vận hành hiệu quả 20+ giờ/ngày nhờ xoay vòng pin (battery rotation) — humanoid.press."
+   "special": "DEEP-DIVE 9/2026 — \"battery rotation\" thực chất là XOAY VÒNG FLEET: robot tự về dock khi pin thấp (UI: \"18% — Going to dock\"), sạc nhanh 9 phút rồi quay lại thay robot khác; không có đổi viên pin bằng tay hay robotic-arm. 10:1 run-to-charge (90' chạy : 9' sạc — tăng từ 2:1 của Digit 4) → ~13–14 chu kỳ/24 h ≈ 20+ h làm việc. Suy ra công suất sạc: nếu pack cỡ 1,3–1,5 kWh (lớp của Digit 4) thì 9 phút cần ~9–10 kW ≈ 6–7C — gợi ý cell fast-charge/high-power đặc biệt, CHƯA được xác nhận. Capacity/voltage/pack weight: không công bố ở mọi thế hệ Digit (spec \"preliminary, pre-production\"). Digit v3 từng đạt UN38.3 (vận chuyển hàng không); pack các thế hệ trước swappable như tùy chọn RaaS. Robot: 129 kg, 1,81 m, payload 22,7 kg (+40%), RaaS ~$8.500/tháng, early access H1/2027."
   },
   "sources": {
    "guide": "https://humanoid.guide/product/digit-5/",
    "hrio": "https://www.humanoid-robots.io/robot/digit-by-agility-robotics",
    "manufacturer": "https://www.agilityrobotics.com/solutions/digit-5",
-   "other": "https://www.agilityrobotics.com/content/agility-unveils-digit-5-humanoid-robot-built-for-cooperatively-safe-work-at-scale"
+   "other": "https://www.geekwire.com/2026/agilitys-new-digit-5-robot-lifts-50-pounds-works-20-hours-a-day/ ; https://www.therobotreport.com/agilitys-digit-5-humanoid-has-new-legs-batteries-safety-upgrades/"
   }
  },
  {
@@ -4204,7 +4204,7 @@ const ROBOTS = [
   "llm": "Helix VLA built on an open-source, open-weight VLM",
   "material": "Soft knit textile cladding over stamped steel / die-cast aluminum structure",
   "battery": {
-   "type": "Lithium-ion (in-house F.03 pack)",
+   "type": "Li-ion (cell không công bố; TrendForce: NMC/NCA high-Ni cho humanoid thế hệ này)",
    "capacity": "2.3 kWh",
    "capacity_wh": 2300,
    "voltage_v": null,
@@ -4212,11 +4212,11 @@ const ROBOTS = [
    "pack_weight_kg": null,
    "discharge_cont_a": null,
    "discharge_peak_a": null,
-   "form_factor": "Structural torso member in stamped-steel + die-cast aluminum enclosure with structural adhesives",
-   "connector": "",
-   "charge_time_h": null,
+   "form_factor": "PACK CẤU TRÚC torso — thành phần chịu tải của khung thân: stamped steel + die-cast aluminum dán structural adhesive, cooling đổ thẳng vào die casting, cell-to-pack ratio cao; chịu rơi 1 m xuống bê tông mọi hướng. KHÔNG tháo nhanh được — thay pin = mổ torso tại xưởng/BotQ",
+   "connector": "Không connector vật lý — sạc không dây cảm ứng 2 kW qua cuộn trong BÀN CHÂN (đế sạc + data offload mmWave 10 Gbps)",
+   "charge_time_h": 1.15,
    "hot_swap": false,
-   "special": "F.03 pack: 2.3 kWh for 5 h runtime at peak performance; 2 kW fast charge with forced-convection active cooling integrated in the die casting; 94% energy-density gain across 3 generations; 78% cost reduction vs F.02; survives 1 m drop onto concrete in any orientation; 4 safety layers (custom BMS with overcharge/overdischarge/over-temp/short-circuit protection, certified cells with 2 internal fusing mechanisms, fusible wirebond interconnects, pack-level flame quenching with flame-arrestor vent); fault-injection validated with no external flame; first humanoid robot battery in process to be certified to both UN38.3 and UL2271; built in-house at BotQ. Voltage and pack weight undisclosed."
+   "special": "DEEP-DIVE 9/2026: in-house 100% (thiết kế + sx tại BotQ 12.000 robot/năm). +94% mật độ năng lượng so F.01, −78% giá thành so F.02. 2,3 kWh → 5 h peak (~460 W TB); sạc 2 kW forced-convection → ngụ ý ≈1,15 h đầy. 4 lớp an toàn: BMS tự thiết kế (overcharge/overdischarge/over-temp/short) · cell 2 cầu chì nội bộ · wirebond tune làm fusible · potting cách nhiệt + flame-arrestor vent (patented no-external-flame) — test đốt 1 cell đến thermal runaway: không phun lửa, không lan cell-to-cell. CHỨNG NHẬN: đạt UN38.3 (10/2025), đang xét UL2271 (23 test NRTL) — humanoid đầu tiên song tiêu chuẩn. Pack weight/voltage/S-P/cycle life: không công bố. Figure 02 trước đó: 2,25 kWh torso tích hợp, 5 h, sạc ~1,5 h."
   },
   "sources": {
    "guide": "https://humanoid.guide/product/figure-03/",
@@ -4386,24 +4386,24 @@ const ROBOTS = [
   "material": "",
   "battery": {
    "type": "Lithium-ion (custom Tesla pack)",
-   "capacity": "2.3 kWh",
+   "capacity": "2.3 kWh — ~44–45 Ah @ 52 V",
    "capacity_wh": 2300,
    "voltage_v": 52,
-   "config": "",
+   "config": "14S9P (suy diễn patent) = 126 cell 21700 · 2 module × 63 cell (7S9P) nối tiếp → 51,8 V",
    "pack_weight_kg": null,
    "discharge_cont_a": null,
    "discharge_peak_a": null,
-   "form_factor": "Integrated torso pack",
+   "form_factor": "Pack torso 2 module dịch vụ độc lập (thay từng module tại xưởng, không hot-swap hiện trường); toàn bộ điện tử pin trên 1 PCB",
    "connector": "NACS (autonomous plug-in; wireless charging also supported)",
    "charge_time_h": null,
    "hot_swap": false,
-   "special": "2.3 kWh / ~52 V pack integrated in the torso (figure from Tesla AI Day; third-party teardown estimates ~2.22 kWh from ~63 cells). ~8 h light-duty runtime per charge. Not hot-swappable."
+   "special": "DEEP-DIVE 9/2026: cell 21700 high-Ni (TrendForce; Wiley review: từng dùng LG INR21700). Trọng lượng pack KHÔNG công bố — suy diễn 10–13 kg (180–220 Wh/kg pack); báo cáo TQ giả định ~18,7 kg. Runtime thật: ~2 h đi bộ động (500 W), 4–6 h việc vừa, \"cả ngày\" chỉ ở ~100–290 W (AI Day: sit 100 W / walk 500 W / peak ~2 kW). Tản nhiệt: 1 fan + duct chung chip+pin. Sạc: demo chính thức 17/10/2024 robot TỰ dock tự cắm; claim NACS autonomous plug-in / sạc không dây CHƯA được Tesla xác nhận — nhưng Tesla giữ patent không dây từ thương vụ Wiferion (Cybercab đã dùng cảm ứng). Lý do không hot-swap (Musk): 2,3 kWh ≈ năng lượng 1 người/ngày (2000 kcal) → ưu tiên tự sạc theo ca. Morgan Stanley teardown: chi phí pin chỉ \"rounding error\" trong BOM ~$55K."
   },
   "sources": {
    "guide": "https://humanoid.guide/product/optimus/",
    "hrio": "https://www.humanoid-robots.io/robot/optimus-gen-25-by-tesla",
    "manufacturer": "https://www.tesla.com/AI",
-   "other": "https://en.wikipedia.org/wiki/Optimus_(robot)"
+   "other": "https://www.batterydesign.net/benchmark/tesla/ ; https://jonver.cn/newsdetail_112 (phân tích patent 126 cell)"
   }
  },
  {
@@ -4447,8 +4447,8 @@ const ROBOTS = [
   "material": "Soft 3D-lattice polymer body",
   "battery": {
    "type": "Lithium-ion",
-   "capacity": "2.3 kWh",
-   "capacity_wh": 2300,
+   "capacity": "Chưa công bố (leak: 2,3–6 kWh, cell 4680)",
+   "capacity_wh": null,
    "voltage_v": null,
    "config": "",
    "pack_weight_kg": null,
@@ -4458,7 +4458,7 @@ const ROBOTS = [
    "connector": "",
    "charge_time_h": null,
    "hot_swap": false,
-   "special": "humanoid.press liệt kê pack 2.3 kWh lithium-ion; runtime 8–10h (full shift); tự dock sạc; quản lý nhiệt tích hợp. Điện áp/Ah/cấu hình/thời gian sạc vẫn chưa công bố — Tesla chưa chính thức công bố trên trang chủ."
+   "special": "Leak render Gen 3 ẩn trong APK app Tesla 9/2026 (không có thông số pin). batterydesign.net: \"pack gets upgraded to ~6 kWh and switches to 4680 cells for production\"; phân tích TQ nói giữ 2,3 kWh đổi 4680, mục tiêu 10 h chạy liên tục. Pilot line Fremont từ 1/2026, mở rộng Giga Texas, mục tiêu 50–100k unit/2026. TrendForce dự báo nhu cầu pin humanoid 0,05 GWh (2025) → 74,2 GWh (2035). Mọi số Gen 3 = rò rỉ, chưa có datasheet."
   },
   "sources": {
    "guide": "https://humanoid.guide/product/optimus-gen-3/",
