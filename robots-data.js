@@ -1228,7 +1228,7 @@ const ROBOTS = [
   "speed_ms": 3.0,
   "payload_kg": 10,
   "actuators": "EngineAI full-size flagship humanoid; high-torque integrated joint modules (up to 400 N·m class)",
-  "price": "≈ US$50,000–90,000 (aggregator estimates, unverified)",
+  "price": "US$40,500–80,800 (RMB 180k–360k, 9srobotics verified 2/2026)",
   "usecases": [
    "Industrial",
    "Manufacturing",
@@ -1510,6 +1510,68 @@ const ROBOTS = [
    "hrio": "",
    "manufacturer": "https://www.fftai.com/",
    "other": "https://robotopian.com/products/fourier-n1-humanoid-robot"
+  }
+ },
+ {
+  "name": "GAC GoMate",
+  "manufacturer": "GAC Group (Guangzhou Automobile; mảng robot tách thành Guangdong Huilun Technology 2026)",
+  "country": "China",
+  "year": 2024,
+  "image": "https://cdn.prod.website-files.com/68835962f272eff6d5e9270e/6a61b1502d768a19fce25f7d_6a61b14d2a7aed50dfd846ba_gomate-by-gac-group_gomate-by-gac-group_auto_12_Thumbnail_M.avif",
+  "height_cm": 168,
+  "weight_kg": 65,
+  "dof": 38,
+  "speed_ms": null,
+  "payload_kg": null,
+  "actuators": "Actuator ô-tô cấp; micro servo hạ áp <30 mm; động cơ axial flux (drive 20 A)",
+  "price": "Không bán — nội bộ GAC",
+  "usecases": [
+   "Sản xuất ô-tô",
+   "Tuần tra an ninh",
+   "Y tế",
+   "Giao hàng",
+   "Concierge showroom GAC"
+  ],
+  "features": [
+   "Wheel-legged: 2 bánh (1,75 m) ⇄ 4 bánh (1,4 m)",
+   "Humanoid ĐẦU TIÊN dùng pin all-solid-state (công nghệ EV GAC)",
+   "6 h runtime (vs 2–4 h điển hình ngành)",
+   "Tiêu thụ năng lượng thấp hơn 80%+",
+   "Thuật toán pure-vision tự lái GAC + SLAM",
+   "Ra mắt 26/12/2024; mục tiêu sản xuất loạt 2026; GoMate Mini gen 4 trình diễn 2/2026"
+  ],
+  "cpu_gpu": "",
+  "runtime_h": 6,
+  "safe_with_humans": "Yes — social navigation nhường người",
+  "fingers": "",
+  "gear_tech": "",
+  "motor_tech": "Động cơ axial flux, micro servo ô-tô (<30 mm)",
+  "main_market": "Showroom GAC, sản xuất ô-tô, an ninh, y tế",
+  "os": "FIGS-SLAM + AI multimodal cloud",
+  "connectivity": "Cloud multimodal AI",
+  "cameras": "Thị giác 3D + LiDAR",
+  "llm": "AI multimodal cloud, giọng nói/cử chỉ",
+  "material": "",
+  "battery": {
+   "type": "All-solid-state (công nghệ cell EV tự phát triển của GAC)",
+   "capacity": "",
+   "capacity_wh": null,
+   "voltage_v": null,
+   "config": "",
+   "pack_weight_kg": null,
+   "discharge_cont_a": null,
+   "discharge_peak_a": null,
+   "form_factor": "",
+   "connector": "",
+   "charge_time_h": null,
+   "hot_swap": null,
+   "special": "Humanoid đầu tiên dùng pin all-solid-state (chuyển giao từ chương trình EV GAC) — cho runtime 6 h. Dung lượng/điện áp/giờ sạc không công bố. Điểm khác biệt cho khảo sát: solid-state thực tế thương mại đầu tiên."
+  },
+  "sources": {
+   "guide": "",
+   "hrio": "https://www.humanoid-robots.io/robot/gomate-by-gac-group",
+   "manufacturer": "https://www.gacgroup.com",
+   "other": "https://9srobotics.com/en/robots/gac-gomate/"
   }
  },
  {
@@ -2746,6 +2808,67 @@ const ROBOTS = [
   }
  },
  {
+  "name": "RobotEra Star1",
+  "manufacturer": "ROBOTERA (Tsinghua-linked)",
+  "country": "China",
+  "year": 2024,
+  "image": "https://cdn.prod.website-files.com/68835962f272eff6d5e9270e/69b97530a37e7e2ecf5da3ea_69734371c1725952828d5625_Reference_Bot_FullBody__960_1.avif",
+  "height_cm": 171,
+  "weight_kg": 63,
+  "dof": 55,
+  "speed_ms": 3.6,
+  "payload_kg": 20,
+  "actuators": "Actuator momo cao độc quyền — tới 400 Nm, đỉnh 25 rad/s (chân 12 DoF, tay 7 DoF mỗi bên)",
+  "price": "Chưa công bố",
+  "usecases": [
+   "Sản xuất điện tử 3C",
+   "Logistics",
+   "Research",
+   "Giải trí",
+   "Dịch vụ ăn uống"
+  ],
+  "features": [
+   "Kỷ lục chạy 2 chân 3,6 m/s (chạy sa mạc Gobi 10/2024, vượt Unitree H1)",
+   "Tay XHAND1: 12 DoF chủ động, direct drive đầy đủ, 5 ngón (đũa, chơi game)",
+   "Tự đứng dậy từ nằm; dáng RL",
+   "ERA-42 masters 100+ nhiệm vụ",
+   "UNIDO partnership; Geely Capital"
+  ],
+  "cpu_gpu": "Tới 275 TOPS AI compute",
+  "runtime_h": 3.1,
+  "safe_with_humans": "",
+  "fingers": "5 (XHAND1)",
+  "gear_tech": "",
+  "motor_tech": "Actuator khớp momo cao (hạng 400 Nm)",
+  "main_market": "Sản xuất 3C, logistics quy mô lớn",
+  "os": "ERA-42",
+  "connectivity": "",
+  "cameras": "",
+  "llm": "ERA-42 embodied AI",
+  "material": "",
+  "battery": {
+   "type": "Li-ion (chưa công bố chi tiết)",
+   "capacity": "",
+   "capacity_wh": null,
+   "voltage_v": null,
+   "config": "",
+   "pack_weight_kg": null,
+   "discharge_cont_a": null,
+   "discharge_peak_a": null,
+   "form_factor": "Module UPS cho phép đổi/sạc pin không tắt máy",
+   "connector": "",
+   "charge_time_h": 0.9,
+   "hot_swap": true,
+   "special": "Điện áp/dung lượng chưa công bố chính thức. Sạc nhanh 20→80% trong 30 phút, 20→100% trong 54 phút. Module UPS sạc+xả đồng thời = đổi pin không mất nguồn (tương đương hot-swap)."
+  },
+  "sources": {
+   "guide": "",
+   "hrio": "https://www.humanoid-robots.io/robot/star1-by-robotera",
+   "manufacturer": "https://www.robotera.com",
+   "other": ""
+  }
+ },
+ {
   "name": "Tiangong Ultra",
   "manufacturer": "X-Humanoid (Beijing Humanoid Robot Innovation Center) + UBTech",
   "country": "China",
@@ -3119,6 +3242,68 @@ const ROBOTS = [
    "hrio": "",
    "manufacturer": "https://www.ubtrobot.com/",
    "other": "https://www.robotshop.com/"
+  }
+ },
+ {
+  "name": "UBTECH Walker S1",
+  "manufacturer": "UBTECH Robotics",
+  "country": "China",
+  "year": 2024,
+  "image": "https://owebsite-cdn.ubtrobot.com/resources/image/2024/10/13/600678134571077.jpg",
+  "height_cm": 172,
+  "weight_kg": 76,
+  "dof": 41,
+  "speed_ms": null,
+  "payload_kg": 15,
+  "actuators": "41 servo-driven joints with innovative rotary actuators",
+  "price": "RMB 500,000–600,000 (~US$70,000–85,000)",
+  "usecases": [
+   "automotive manufacturing",
+   "quality inspection",
+   "material handling",
+   "industrial logistics"
+  ],
+  "features": [
+   "360° panoramic perception via dual fisheye + RGB-D",
+   "Third-gen dexterous hands with 6 tactile pressure arrays",
+   "LLM-based task planning",
+   "Semantic VSLAM",
+   "ROSA 2.0",
+   "99%+ inspection accuracy",
+   "Deployments: Zeekr Ningbo (logo/headlight inspection), BYD (2x efficiency vs Walker S), Dongfeng Liuzhou"
+  ],
+  "cpu_gpu": "",
+  "runtime_h": 2,
+  "safe_with_humans": "",
+  "fingers": "",
+  "gear_tech": "",
+  "motor_tech": "",
+  "main_market": "Industrial — automotive manufacturing",
+  "os": "ROSA 2.0",
+  "connectivity": "",
+  "cameras": "Dual fisheye + RGB-D (360°)",
+  "llm": "LLM-based task planning",
+  "material": "",
+  "battery": {
+   "type": "",
+   "capacity": "15 Ah",
+   "capacity_wh": 720,
+   "voltage_v": 48,
+   "config": "Dual hot-swappable battery packs with thermal management",
+   "pack_weight_kg": null,
+   "discharge_cont_a": null,
+   "discharge_peak_a": null,
+   "form_factor": "Dual hot-swap packs (quản lý nhiệt)",
+   "connector": "",
+   "charge_time_h": null,
+   "hot_swap": true,
+   "special": "9srobotics (Verified 28/02/2026, Production): 15 Ah / 48 V dual hot-swap + thermal management, ~2 h runtime; 720 Wh TÍNH TOÁN (15×48) — UBTECH không công bố Wh. Cùng lớp 48V 15Ah với Walker C/C1."
+  },
+  "sources": {
+   "guide": "",
+   "hrio": "",
+   "manufacturer": "https://www.ubtechrobotics.com",
+   "other": "https://9srobotics.com/en/robots/ubtech-walker-s1/"
   }
  },
  {
@@ -3992,7 +4177,7 @@ const ROBOTS = [
   "speed_ms": 1.5,
   "payload_kg": 16,
   "actuators": "Electric actuators with Harmonic Drive gearing",
-  "price": "US$45,000 (humanoid.guide) to ~US$250,000 (humanoid-robots.io estimate); not officially disclosed, RaaS leasing reported",
+  "price": "US$45,000 (guide) – ~US$250,000 CapEx; RaaS ~US$30/h (GXO multi-year, 9srobotics)",
   "usecases": [
    "Warehouse logistics",
    "Package handling in distribution centers",
@@ -4468,6 +4653,67 @@ const ROBOTS = [
   }
  },
  {
+  "name": "Yogi",
+  "manufacturer": "Cartwheel Robotics",
+  "country": "USA",
+  "year": 2025,
+  "image": "https://cdn.prod.website-files.com/68835962f272eff6d5e9270e/69b9753b882c57e5d26f0756_691c45e0318ff78ed7dd7701_Reference_Bot_Thumbnail__720_.avif",
+  "height_cm": 150,
+  "weight_kg": 47,
+  "dof": 36,
+  "speed_ms": 1.1,
+  "payload_kg": 15,
+  "actuators": "Electric (compliant electromechanical actuators)",
+  "price": "Chưa công bố",
+  "usecases": [
+   "Social/Companion",
+   "Nursing & Eldercare",
+   "Hospitality",
+   "Service",
+   "Healthcare"
+  ],
+  "features": [
+   "Motion Language Model (MLM) cho cử chỉ cảm xúc + giọng nói tự nhiên",
+   "Vận động viên động: flips, nhảy, thể dục chính xác với ổn định real-time",
+   "Công suất actuator nổ không mòn phần cứng",
+   "Da silicone y tế + actuator mềm để chạm an toàn",
+   "Ra mắt Humanoid Summit 2025; đàm phán với các cơ sở y tế Bắc Mỹ"
+  ],
+  "cpu_gpu": "",
+  "runtime_h": 3,
+  "safe_with_humans": "Yes — da silicone y tế, actuator compliant",
+  "fingers": "",
+  "gear_tech": "",
+  "motor_tech": "",
+  "main_market": "Healthcare, hospitality, home (Bắc Mỹ)",
+  "os": "",
+  "connectivity": "",
+  "cameras": "Visual sensors (chưa công bố chi tiết)",
+  "llm": "Motion Language Model (MLM)",
+  "material": "Medical-grade silicone skin, compliant actuators",
+  "battery": {
+   "type": "Li-ion (suy đoán, chưa công bố)",
+   "capacity": "",
+   "capacity_wh": null,
+   "voltage_v": null,
+   "config": "",
+   "pack_weight_kg": null,
+   "discharge_cont_a": null,
+   "discharge_peak_a": null,
+   "form_factor": "Pack mô-đun tháo đổi",
+   "connector": "",
+   "charge_time_h": null,
+   "hot_swap": true,
+   "special": "Dung lượng/điện áp chưa công bố. Pin mô-đun tháo đổi thiết kế cho vận hành cả ngày (Interesting Engineering 10/2025); runtime ~3 h."
+  },
+  "sources": {
+   "guide": "",
+   "hrio": "https://www.humanoid-robots.io/robot/yogi-by-cartwheel",
+   "manufacturer": "https://www.cartwheelrobotics.com/",
+   "other": ""
+  }
+ },
+ {
   "name": "Phoenix",
   "manufacturer": "Sanctuary AI",
   "country": "Canada",
@@ -4621,7 +4867,7 @@ const ROBOTS = [
    "Payload up to 100 kg in leg-supported configurations (official datasheet lists 20 kg arms payload)",
    "Datasheet V7/2026: 55 DoF, 24/7 operating time, 12 hand DoF"
   ],
-  "cpu_gpu": "Onboard cognitive AI compute platform (NEURA Neuraverse); exact silicon not published",
+  "cpu_gpu": "NVIDIA Thor T5000 với water-cooling (9srobotics 2/2026)",
   "runtime_h": 6,
   "safe_with_humans": "Yes - touchless human detection sensors + sensor skin; 'Zero-Cage' certified for uncaged operation",
   "fingers": "5 per hand",
@@ -4841,6 +5087,61 @@ const ROBOTS = [
   }
  },
  {
+  "name": "MenteeBot",
+  "manufacturer": "Mentee Robotics",
+  "country": "Israel",
+  "year": 2025,
+  "image": "",
+  "height_cm": 175,
+  "weight_kg": 70,
+  "dof": null,
+  "speed_ms": null,
+  "payload_kg": 25,
+  "actuators": "",
+  "price": "$35,000 (hellonoid; giao hàng 2026)",
+  "usecases": [
+   "household",
+   "warehouse"
+  ],
+  "features": [
+   "Đồng sáng lập Amnon Shashua (Mobileye)",
+   "3 h battery life theo hellonoid"
+  ],
+  "cpu_gpu": "",
+  "runtime_h": 3,
+  "safe_with_humans": "",
+  "fingers": "",
+  "gear_tech": "",
+  "motor_tech": "",
+  "main_market": "Home + warehouse",
+  "os": "",
+  "connectivity": "",
+  "cameras": "",
+  "llm": "",
+  "material": "",
+  "battery": {
+   "type": "",
+   "capacity": "",
+   "capacity_wh": null,
+   "voltage_v": null,
+   "config": "",
+   "pack_weight_kg": null,
+   "discharge_cont_a": null,
+   "discharge_peak_a": null,
+   "form_factor": "",
+   "connector": "",
+   "charge_time_h": null,
+   "hot_swap": null,
+   "special": "hellonoid ghi Battery Life 3 h; Wh/V/Ah chưa từng công bố."
+  },
+  "sources": {
+   "guide": "https://hellonoid.com/robots/mentee-bot",
+   "hrio": "",
+   "manufacturer": "https://menteerobotics.com",
+   "other": ""
+  }
+ },
+ {
   "name": "iCub 3",
   "manufacturer": "Istituto Italiano di Tecnologia (IIT) / RoboCub consortium",
   "country": "Italy",
@@ -5028,6 +5329,66 @@ const ROBOTS = [
   }
  },
  {
+  "name": "Clone Alpha",
+  "manufacturer": "Clone Robotics",
+  "country": "Poland",
+  "year": 2024,
+  "image": "https://cdn.prod.website-files.com/68835962f272eff6d5e9270e/6a619ac4dae1a528799716ea_6a619ac247cfaa412b342f69_clone-alpha-by-clone-robotics-inc_image_Thumbnail_M.avif",
+  "height_cm": 170,
+  "weight_kg": 75,
+  "dof": 164,
+  "speed_ms": null,
+  "payload_kg": 20,
+  "actuators": "Cơ thủy lực nhân tạo Myofiber (nước) + bơm 'tim' 500 W; van Aquajet <1 W mỗi van",
+  "price": "$100,000 (unverified — humanoid.guide)",
+  "usecases": [
+   "Research",
+   "Đào tạo y khoa",
+   "Phục hồi chức năng",
+   "Telepresence",
+   "Home android (Alpha Edition 279 units)"
+  ],
+  "features": [
+   "Android cơ-xương: 206 xương nhân tạo, 164 DoF thân trên (20/vai, 6/đốt sống, 26/bàn tay)",
+   "Cơ Myofiber: ≥1 kg lực co / 3 g sợi cơ",
+   "Hệ thủy lực nước 500 W",
+   "27 DoF mỗi tay, haptic feedback"
+  ],
+  "cpu_gpu": "Edge GPU low-latency",
+  "runtime_h": null,
+  "safe_with_humans": "",
+  "fingers": "",
+  "gear_tech": "Không bánh răng — cơ thủy lực sinh học thay actuator quay",
+  "motor_tech": "Kích hoạt thủy lực (bơm 500 W, van Aquajet)",
+  "main_market": "Đào tạo y khoa, nghiên cứu soft-robotics; Alpha Edition hạn chế",
+  "os": "",
+  "connectivity": "",
+  "cameras": "4 camera depth; cảm biến da haptic",
+  "llm": "",
+  "material": "206 xương tổng hợp; cơ nhân tạo Myofiber chạy nước",
+  "battery": {
+   "type": "Semi-solid-state (bên thứ 3, CHƯA được hãng xác nhận)",
+   "capacity": "1.7 kWh (unverified)",
+   "capacity_wh": 1700,
+   "voltage_v": null,
+   "config": "",
+   "pack_weight_kg": null,
+   "discharge_cont_a": null,
+   "discharge_peak_a": null,
+   "form_factor": "",
+   "connector": "",
+   "charge_time_h": null,
+   "hot_swap": null,
+   "special": "1,7 kWh semi-solid ~4h runtime CHỈ từ database bên thứ 3 (ui44/allrobots) — không có trong spec chính thức Clone. Năng lượng truyền thủy lực qua bơm 500 W. Coi dung lượng là unverified."
+  },
+  "sources": {
+   "guide": "https://humanoid.guide/robots/clone-alpha/",
+   "hrio": "https://www.humanoid-robots.io/robot/clone-alpha-by-clone-robotics-inc",
+   "manufacturer": "https://clonerobotics.com",
+   "other": ""
+  }
+ },
+ {
   "name": "Adam",
   "manufacturer": "PNDbotics",
   "country": "Russia",
@@ -5206,7 +5567,7 @@ const ROBOTS = [
    "connector": "",
    "charge_time_h": null,
    "hot_swap": null,
-   "special": "No battery specifications (chemistry, Wh, voltage) publicly disclosed by WIRobotics; only ~3 h runtime reported by aggregators. Battery weight included in 55 kg total."
+   "special": "Không công bố pin. Runtime: ~3 h (humanoid.guide); robozaps ghi 120 min nhưng UNVERIFIED (2/10 specs). Giá $180,000 (hellonoid khớp guide)."
   },
   "sources": {
    "guide": "https://humanoid.guide/product/allex/",
@@ -5285,13 +5646,13 @@ const ROBOTS = [
   "country": "South Korea",
   "year": 2026,
   "image": "https://humanoid.press/gallery_gen/1e1eeaa519f259adcea6cdffe861038a_fill.png",
-  "height_cm": null,
-  "weight_kg": null,
-  "dof": null,
-  "speed_ms": null,
-  "payload_kg": null,
+  "height_cm": 125,
+  "weight_kg": 65,
+  "dof": 12,
+  "speed_ms": 1.1,
+  "payload_kg": 5,
   "actuators": "Not published (multi-DoF arms, consumer-safe grippers, full bipedal leg DOF)",
-  "price": "Not published",
+  "price": "$35,000 (hellonoid)",
   "usecases": [
    "Home automation",
    "Connected-appliance control via ThinQ",
@@ -5306,10 +5667,11 @@ const ROBOTS = [
    "Q9 cloud AI as intelligence backbone",
    "Vision-language-action reasoning and task planning",
    "Cloud updates; safe movement around people and pets",
-   "Thin, consumer-friendly pole-like design"
+   "Thin, consumer-friendly pole-like design",
+   "Hellonoid ghi trạng thái shipping, runtime 9 h"
   ],
   "cpu_gpu": "Not published",
-  "runtime_h": null,
+  "runtime_h": 9,
   "safe_with_humans": "Yes - designed for safe movement around people and pets",
   "fingers": "Not published (consumer-safe grippers)",
   "gear_tech": "",
@@ -5333,13 +5695,13 @@ const ROBOTS = [
    "connector": "",
    "charge_time_h": null,
    "hot_swap": null,
-   "special": "Trang nguồn chỉ ghi: Power Source Electric; Runtime/Charging 'not published'. LG chưa ra số liệu pin nào (newsroom cũng không có)"
+   "special": "hellonoid: Battery Life 9 h — Wheeled (bánh xe, không 2 chân), trạng thái shipping cho sân bay/khách sạn/bán lẻ. Wh/V chưa công bố; LG newsroom vẫn chưa có số liệu."
   },
   "sources": {
    "guide": "https://humanoid.press/database/database-lg-cloid-humanoid-robot/",
    "hrio": "",
    "manufacturer": "https://www.lgnewsroom.com",
-   "other": ""
+   "other": "https://hellonoid.com/robots/cloid"
   }
  },
  {
@@ -5649,6 +6011,67 @@ const ROBOTS = [
   }
  },
  {
+  "name": "Alfie (wheeled)",
+  "manufacturer": "Prosper Robotics",
+  "country": "United Kingdom",
+  "year": 2025,
+  "image": "https://cdn.prod.website-files.com/68835962f272eff6d5e9270e/6a60ca97e6107c094bbe7684_6a457d8037d5642743de4ed2_alfie-wheeled-by-prosper-robotics__thumbnail_Thumbnail_M.avif",
+  "height_cm": 170,
+  "weight_kg": 100,
+  "dof": null,
+  "speed_ms": null,
+  "payload_kg": null,
+  "actuators": "Custom electric actuators, dual-arm, wheeled base",
+  "price": "$5,000 + $500/tháng (hrio); coverage khác $10,000–15,000",
+  "usecases": [
+   "Việc nhà (giặt, xếp máy rửa bát, lau dọn)",
+   "Consumer/Home",
+   "Service",
+   "Nursing & Eldercare",
+   "Khách sạn/Bệnh viện"
+  ],
+  "features": [
+   "Nền bánh xe 'Silent Mobility' cho hoạt động nhà kín tiếng",
+   "Edge AI riêng tư: không dữ liệu hình ảnh rời nhà",
+   "Actuator cảm biến lực xử lý đồ dễ vỡ",
+   "Lệnh nhiệm vụ ngôn ngữ tự nhiên",
+   "Pilot London lúc ra mắt; sáng lập Shariq Hashme (ex-OpenAI)"
+  ],
+  "cpu_gpu": "Local edge AI",
+  "runtime_h": null,
+  "safe_with_humans": "",
+  "fingers": "",
+  "gear_tech": "",
+  "motor_tech": "",
+  "main_market": "Consumer domestic (London pilot)",
+  "os": "",
+  "connectivity": "",
+  "cameras": "Local perception, xử lý edge",
+  "llm": "Giao tiếp ngôn ngữ tự nhiên trên stack edge",
+  "material": "",
+  "battery": {
+   "type": "Battery-powered (chưa công bố hóa học)",
+   "capacity": "",
+   "capacity_wh": null,
+   "voltage_v": null,
+   "config": "",
+   "pack_weight_kg": null,
+   "discharge_cont_a": null,
+   "discharge_peak_a": null,
+   "form_factor": "",
+   "connector": "",
+   "charge_time_h": null,
+   "hot_swap": null,
+   "special": "Không công bố thông số pin nào (Wh/V/Ah/runtime/sạc). 'Battery Powered' chỉ là tag trên hrio."
+  },
+  "sources": {
+   "guide": "",
+   "hrio": "https://www.humanoid-robots.io/robot/alfie-wheeled-by-prosper-robotics",
+   "manufacturer": "",
+   "other": ""
+  }
+ },
+ {
   "name": "Humanoid HMND 01",
   "manufacturer": "Humanoid (Humanoid AI Ltd)",
   "country": "United Kingdom",
@@ -5672,7 +6095,8 @@ const ROBOTS = [
    "Bipedal Alpha variant (Sept 2025): 179 cm, 90 kg, 2 m/s, walking stably after 48 h of training",
    "Built in 7 months; company-claimed 34,000 pre-orders; $100M founder funding",
    "Bosch to contract-manufacture for Europe (May 2026); Schaeffler supplies components and plans up to 2,000-robot deployments",
-   "KinetIQ proprietary four-layer AI stack on NVIDIA compute; pilots with SAP, Siemens, Martur Fompak; CES 2026 North American debut"
+   "KinetIQ proprietary four-layer AI stack on NVIDIA compute; pilots with SAP, Siemens, Martur Fompak; CES 2026 North American debut",
+   "Deployments mới: Siemens UK/DE (~90% tự chủ tote), Ford Cologne, Schaeffler RaaS 1.000–2.000 unit đến 2032"
   ],
   "cpu_gpu": "NVIDIA-based compute running KinetIQ four-layer AI stack",
   "runtime_h": 4,
